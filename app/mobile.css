@@ -267,3 +267,13 @@ html[data-theme="dark"] {
   .leader-region { width: 100%; }
   .leader-separator { display: none; }
 }
+
+/* Keep the mobile layout viewport aligned with the visible screen. Without
+   clipping horizontal overflow, WebView can move fixed navigation below it. */
+@media (max-width: 650px) {
+  html, body { width: 100%; max-width: 100%; overflow-x: clip; }
+  .app-shell, .main-shell, main { min-width: 0; max-width: 100%; }
+  .page-heading > div, .update-strip > div { min-width: 0; }
+  .toolbar-right { min-width: 0; flex-wrap: wrap; }
+  .mobile-bottom-nav { width: 100%; }
+}

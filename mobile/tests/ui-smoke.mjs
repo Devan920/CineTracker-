@@ -25,6 +25,8 @@ try{
    const rect=button?.getBoundingClientRect(), style=nav?getComputedStyle(nav):null;
    return {width:innerWidth,viewport:visualViewport&&{width:visualViewport.width,height:visualViewport.height,scale:visualViewport.scale},documentWidth:document.documentElement.scrollWidth,viewportMeta:document.querySelector('meta[name=viewport]')?.content,nav:nav?.getBoundingClientRect().toJSON(),button:rect?.toJSON(),position:style?.position,zIndex:style?.zIndex,hit:rect?document.elementsFromPoint(rect.x+rect.width/2,rect.y+rect.height/2).slice(0,5).map(e=>e.tagName+'.'+e.className):[]};
  })));
+ const navBox=await nav.boundingBox();
+ assert.ok(navBox && navBox.y+navBox.height<=845,'Bottom navigation must stay inside the visible phone screen');
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('button',{name:'Dark',exact:true}).click();
  assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
