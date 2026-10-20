@@ -1,0 +1,66 @@
+
+name: Build CineTracker APK
+on:
+  push:
+    branches: [codex/cinetracker-android-apk]
+    paths: [mobile/**, app/**, lib/**, public/**, .github/workflows/android-apk.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cinetracker-android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Test report persistence, discovery, and failures
+        run: npm test
+      - name: Type-check and bundle app screens
+        run: npm run build
+      - name: Install browser for UI verification
+        run: npx playwright install --with-deps chromium
+      - name: Verify mobile UI
+        run: npm run test:ui
+      - name: Prepare Android project
+        run: npm run android:prepare
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Compile APK
+        run: bash gradlew assembleDebug --no-daemon
+        working-directory: mobile/android
+      - name: Verify APK and package source
+        working-directory: .
+        run: |
+          mkdir -p artifacts
+          cp mobile/android/app/build/outputs/apk/debug/app-debug.apk artifacts/CineTracker-1.0.0-debug.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose artifacts/CineTracker-1.0.0-debug.apk
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging artifacts/CineTracker-1.0.0-debug.apk | head -n 14
+          sha256sum artifacts/CineTracker-1.0.0-debug.apk > artifacts/SHA256SUMS.txt
+          zip -q -r artifacts/CineTracker-Android-Source.zip mobile app lib public .github/workflows/android-apk.yml -x 'mobile/node_modules/*' 'mobile/android/.gradle/*' 'mobile/android/build/*' 'mobile/android/app/build/*' 'mobile/android/local.properties' 'mobile/dist/*'
+      - name: Check live publisher availability
+        run: node tests/live-check.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CineTracker-Android
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30

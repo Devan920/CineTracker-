@@ -1,0 +1,5 @@
+
+html[data-native="true"] { overscroll-behavior-y: none; }
+html[data-native="true"] body { overscroll-behavior-y: none; }
+html[data-native="true"] .app-settings-button span { display: none; }
+html[data-native="true"] .install-details { display: none; }
