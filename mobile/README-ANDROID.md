@@ -61,3 +61,10 @@ This remains development-signed. Configure a persistent private release signing
 key before distributing production updates that must install in place. Never
 commit signing keys or include them in public artifacts. The original 1.0.0
 temporary debug key is not available to sign this version.
+
+## Feedback (1.1.1)
+
+Settings > Send feedback opens Devanarayanan's provided Instagram profile or
+Telegram chat. The user writes and sends their message in that platform. No
+feedback server, new sign-in flow, automatic message, or additional device
+permission is needed. The original social links are also retained.
