@@ -1,0 +1,21 @@
+{
+  "app": "CineTracker",
+  "source_commit": "f4b5b296ab37fd15147ba6679803624bd84fc7fb",
+  "published_site": "https://cinepulse-collections.earlylily16.chatgpt.site",
+  "exported_at": "2026-10-20T15:08:29.410136+00:00",
+  "source_files": 164,
+  "application_code_unchanged": true,
+  "documentation_updates": [
+    "README.md",
+    "START_HERE.md"
+  ],
+  "included_features": [
+    "redesigned UI",
+    "dark mode",
+    "social links",
+    "no marquee pause button",
+    "20-minute checks while open"
+  ],
+  "native_apk": false,
+  "background_scheduler_connected": false
+}

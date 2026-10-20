@@ -1,0 +1,1664 @@
+{
+  "movies": [
+    {
+      "id": "jailer_2_2026",
+      "title": "Jailer 2",
+      "languages": [
+        "Tamil",
+        "Hindi",
+        "Telugu",
+        "Kannada"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/9463.jpg?v=238",
+      "day": 5,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-15",
+      "indiaNet": 242.25,
+      "indiaGross": 283.75,
+      "worldwide": 477.75,
+      "overseas": 194,
+      "daily": [
+        {
+          "day": 1,
+          "net": 59.7,
+          "date": "2026-10-15"
+        },
+        {
+          "day": 2,
+          "net": 37.1,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 3,
+          "net": 47.25,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 4,
+          "net": 55.85,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 5,
+          "net": 42.35,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Jailer_2_2026_Box_Office_Collection_Day_5",
+      "sourceUpdatedAt": "2026-10-19T16:52:54.000Z",
+      "checkedAt": "2026-10-19T17:17:58.401Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Kollywood"
+    },
+    {
+      "id": "ranabaali_2026",
+      "title": "Ranabaali",
+      "languages": [
+        "Telugu",
+        "Tamil",
+        "Hindi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14289.jpg?v=435",
+      "day": 4,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-16",
+      "indiaNet": 29.02,
+      "indiaGross": 33.86,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 9.25,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 2,
+          "net": 7.3,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 3,
+          "net": 7.5,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 4,
+          "net": 4.97,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Ranabaali_2026_Box_Office_Collection_Day_4",
+      "sourceUpdatedAt": "2026-10-19T17:13:11.000Z",
+      "checkedAt": "2026-10-19T17:17:58.412Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Tollywood"
+    },
+    {
+      "id": "desu7_2026",
+      "title": "DeSu7",
+      "languages": [
+        "Bengali"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/13129.jpg",
+      "day": 4,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-16",
+      "indiaNet": 2.84,
+      "indiaGross": 3.36,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 0.75,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 2,
+          "net": 0.65,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 3,
+          "net": 0.75,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 4,
+          "net": 0.69,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/DeSu7_2026_Box_Office_Collection_Day_4",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.416Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Bengali Tollywood"
+    },
+    {
+      "id": "nayyi_navelli_2026",
+      "title": "Nayyi Navelli",
+      "languages": [
+        "Hindi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14283.jpg?v=385",
+      "day": 4,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-16",
+      "indiaNet": 14.15,
+      "indiaGross": 16.85,
+      "worldwide": 19.1,
+      "overseas": 2.25,
+      "daily": [
+        {
+          "day": 1,
+          "net": 3.25,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 2,
+          "net": 4,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 3,
+          "net": 4.4,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 4,
+          "net": 2.5,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Nayyi_Navelli_2026_Box_Office_Collection_Day_4",
+      "sourceUpdatedAt": "2026-10-19T17:08:13.000Z",
+      "checkedAt": "2026-10-19T17:17:58.422Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Bollywood"
+    },
+    {
+      "id": "prahaar_2026",
+      "title": "Prahaar - The Ujjwal Nikam Story",
+      "languages": [
+        "Hindi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/13850.jpg",
+      "day": 4,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-16",
+      "indiaNet": 11.15,
+      "indiaGross": 13.26,
+      "worldwide": 15.41,
+      "overseas": 2.15,
+      "daily": [
+        {
+          "day": 1,
+          "net": 2.35,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 2,
+          "net": 3.15,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 3,
+          "net": 3.65,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 4,
+          "net": 2,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Prahaar_2026_Box_Office_Collection_Day_4",
+      "sourceUpdatedAt": "2026-10-19T17:10:26.000Z",
+      "checkedAt": "2026-10-19T17:17:58.426Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Bollywood"
+    },
+    {
+      "id": "bohurupi_the_golden_daku_2026",
+      "title": "Bohurupi: The Golden Daku",
+      "languages": [
+        "Bengali"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14285.jpg?v=424",
+      "day": 5,
+      "reportDate": null,
+      "releaseDate": "2026-10-15",
+      "indiaNet": null,
+      "indiaGross": null,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/movie/Bohurupi_The_Golden_Daku_2026",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "unavailable",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": null
+    },
+    {
+      "id": "the_eken_keralaekurukshetra_2026",
+      "title": "The Eken: Kerala-e-Kurukshetra",
+      "languages": [
+        "Bengali"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14286.jpg?v=426",
+      "day": 5,
+      "reportDate": null,
+      "releaseDate": "2026-10-15",
+      "indiaNet": null,
+      "indiaGross": null,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/movie/The_Eken_KeralaeKurukshetra_2026",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "unavailable",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": null
+    },
+    {
+      "id": "whalefall_2026",
+      "title": "Whalefall",
+      "languages": [
+        "English"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14293.jpg?v=453",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.78,
+      "indiaGross": 0.88,
+      "worldwide": 0.88,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "active-report",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Hollywood"
+    },
+    {
+      "id": "street_fighter_2026",
+      "title": "Street Fighter",
+      "languages": [
+        "Tamil",
+        "Hindi",
+        "English",
+        "Telugu"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14290.jpg?v=451",
+      "day": 4,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-16",
+      "indiaNet": 4.73,
+      "indiaGross": 5.6,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 1.05,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 2,
+          "net": 1.45,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 3,
+          "net": 1.5799999999999998,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 4,
+          "net": 0.65,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Street_Fighter_2026_Box_Office_Collection_Day_4",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.440Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Kollywood"
+    },
+    {
+      "id": "crazy_kalyanam_2026",
+      "title": "Crazy Kalyanam",
+      "languages": [
+        "Telugu"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14294.jpg?v=454",
+      "day": 4,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-16",
+      "indiaNet": 0.72,
+      "indiaGross": 0.83,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 0.2,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 2,
+          "net": 0.2,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 3,
+          "net": 0.19,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 4,
+          "net": 0.13,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Crazy_Kalyanam_2026_Box_Office_Collection_Day_4",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.453Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Tollywood"
+    },
+    {
+      "id": "garividi_lakshmi_2026",
+      "title": "Garividi Lakshmi",
+      "languages": [
+        "Telugu"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14292.jpg?v=456",
+      "day": 3,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-17",
+      "indiaNet": 1.96,
+      "indiaGross": 2.28,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 0.6,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 2,
+          "net": 0.78,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 3,
+          "net": 0.58,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Garividi_Lakshmi_2026_Box_Office_Collection_Day_3",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.444Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Tollywood"
+    },
+    {
+      "id": "emperor_vs_sarat_chandra_2026",
+      "title": "Emperor vs Sarat Chandra",
+      "languages": [
+        "Bengali"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14287.jpg?v=427",
+      "day": 5,
+      "reportDate": null,
+      "releaseDate": "2026-10-15",
+      "indiaNet": null,
+      "indiaGross": null,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/movie/Emperor_vs_Sarat_Chandra_2026",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "unavailable",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": null
+    },
+    {
+      "id": "drones_2026",
+      "title": "Drones",
+      "languages": [
+        "Tamil"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14288.jpg?v=429",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.42,
+      "indiaGross": 0.48,
+      "worldwide": 0.48,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "active-report",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Kollywood"
+    },
+    {
+      "id": "thaapi_2026",
+      "title": "Thaapi",
+      "languages": [
+        "Punjabi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14298.jpg?v=497",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.3,
+      "indiaGross": 0.33,
+      "worldwide": 0.33,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "active-report",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Pollywood"
+    },
+    {
+      "id": "drishyam_3_hindi_2026",
+      "title": "Drishyam 3: The Conclusion",
+      "languages": [
+        "Hindi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14121.jpg",
+      "day": 18,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-02",
+      "indiaNet": 350.75,
+      "indiaGross": 420.32,
+      "worldwide": 542.82,
+      "overseas": 122.5,
+      "daily": [
+        {
+          "day": 1,
+          "net": 62,
+          "date": "2026-10-02"
+        },
+        {
+          "day": 2,
+          "net": 53.5,
+          "date": "2026-10-03"
+        },
+        {
+          "day": 3,
+          "net": 61,
+          "date": "2026-10-04"
+        },
+        {
+          "day": 4,
+          "net": 21,
+          "date": "2026-10-05"
+        },
+        {
+          "day": 5,
+          "net": 19.5,
+          "date": "2026-10-06"
+        },
+        {
+          "day": 6,
+          "net": 15.5,
+          "date": "2026-10-07"
+        },
+        {
+          "day": 7,
+          "net": 13,
+          "date": "2026-10-08"
+        },
+        {
+          "day": 8,
+          "net": 14.5,
+          "date": "2026-10-09"
+        },
+        {
+          "day": 9,
+          "net": 26.5,
+          "date": "2026-10-10"
+        },
+        {
+          "day": 10,
+          "net": 22.5,
+          "date": "2026-10-11"
+        },
+        {
+          "day": 11,
+          "net": 6,
+          "date": "2026-10-12"
+        },
+        {
+          "day": 12,
+          "net": 8.5,
+          "date": "2026-10-13"
+        },
+        {
+          "day": 13,
+          "net": 5.25,
+          "date": "2026-10-14"
+        },
+        {
+          "day": 14,
+          "net": 4.25,
+          "date": "2026-10-15"
+        },
+        {
+          "day": 15,
+          "net": 3.1,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 16,
+          "net": 5,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 17,
+          "net": 6.25,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 18,
+          "net": 3.4,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/drishyam_3_hindi_2026_Box_Office_Collection_Day_18",
+      "sourceUpdatedAt": "2026-10-19T17:05:56.000Z",
+      "checkedAt": "2026-10-19T17:17:58.431Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Bollywood"
+    },
+    {
+      "id": "premada_oorali_2026",
+      "title": "Premada Oorali",
+      "languages": [
+        "Kannada"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14186.jpg",
+      "day": 25,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-09-25",
+      "indiaNet": 80.61,
+      "indiaGross": 94.22,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 0.09,
+          "date": "2026-09-25"
+        },
+        {
+          "day": 2,
+          "net": 0.23,
+          "date": "2026-09-26"
+        },
+        {
+          "day": 3,
+          "net": 0.55,
+          "date": "2026-09-27"
+        },
+        {
+          "day": 4,
+          "net": 0.65,
+          "date": "2026-09-28"
+        },
+        {
+          "day": 5,
+          "net": 0.95,
+          "date": "2026-09-29"
+        },
+        {
+          "day": 6,
+          "net": 1.15,
+          "date": "2026-09-30"
+        },
+        {
+          "day": 7,
+          "net": 1.7,
+          "date": "2026-10-01"
+        },
+        {
+          "day": 8,
+          "net": 2.6,
+          "date": "2026-10-02"
+        },
+        {
+          "day": 9,
+          "net": 2.8,
+          "date": "2026-10-03"
+        },
+        {
+          "day": 10,
+          "net": 3.85,
+          "date": "2026-10-04"
+        },
+        {
+          "day": 11,
+          "net": 3,
+          "date": "2026-10-05"
+        },
+        {
+          "day": 12,
+          "net": 3.65,
+          "date": "2026-10-06"
+        },
+        {
+          "day": 13,
+          "net": 3.85,
+          "date": "2026-10-07"
+        },
+        {
+          "day": 14,
+          "net": 3.9,
+          "date": "2026-10-08"
+        },
+        {
+          "day": 15,
+          "net": 4.5,
+          "date": "2026-10-09"
+        },
+        {
+          "day": 16,
+          "net": 6.75,
+          "date": "2026-10-10"
+        },
+        {
+          "day": 17,
+          "net": 8,
+          "date": "2026-10-11"
+        },
+        {
+          "day": 18,
+          "net": 4.75,
+          "date": "2026-10-12"
+        },
+        {
+          "day": 19,
+          "net": 4.75,
+          "date": "2026-10-13"
+        },
+        {
+          "day": 20,
+          "net": 4.5,
+          "date": "2026-10-14"
+        },
+        {
+          "day": 21,
+          "net": 3.15,
+          "date": "2026-10-15"
+        },
+        {
+          "day": 22,
+          "net": 3,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 23,
+          "net": 4.15,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 24,
+          "net": 5,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 25,
+          "net": 3.09,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Premada_Oorali_2026_Box_Office_Collection_Day_25",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.435Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Sandalwood"
+    },
+    {
+      "id": "baththa_2026",
+      "title": "Baththa",
+      "languages": [
+        "Tamil"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14224.jpg?v=40",
+      "day": 19,
+      "reportDate": null,
+      "releaseDate": "2026-10-01",
+      "indiaNet": null,
+      "indiaGross": null,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/movie/Baththa_2026",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "unavailable",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": null
+    },
+    {
+      "id": "comrade_kalyan_2026",
+      "title": "Comrade Kalyan",
+      "languages": [
+        "Telugu"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14266.jpg?v=278",
+      "day": 11,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-09",
+      "indiaNet": 13.51,
+      "indiaGross": 15.54,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 2.1,
+          "date": "2026-10-09"
+        },
+        {
+          "day": 2,
+          "net": 3,
+          "date": "2026-10-10"
+        },
+        {
+          "day": 3,
+          "net": 3.05,
+          "date": "2026-10-11"
+        },
+        {
+          "day": 4,
+          "net": 1.45,
+          "date": "2026-10-12"
+        },
+        {
+          "day": 5,
+          "net": 1.35,
+          "date": "2026-10-13"
+        },
+        {
+          "day": 6,
+          "net": 1.18,
+          "date": "2026-10-14"
+        },
+        {
+          "day": 7,
+          "net": 0.58,
+          "date": "2026-10-15"
+        },
+        {
+          "day": 8,
+          "net": 0.22,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 9,
+          "net": 0.21,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 10,
+          "net": 0.22,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 11,
+          "net": 0.15,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Comrade_Kalyan_2026_Box_Office_Collection_Day_11",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.457Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Tollywood"
+    },
+    {
+      "id": "doraemon_castle_of_the_undersea_devil_2026",
+      "title": "Doraemon: Castle of the Undersea Devil",
+      "languages": [
+        "Hindi",
+        "Tamil",
+        "Telugu"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14229.jpg?v=65",
+      "day": 18,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-10-02",
+      "indiaNet": 22.09,
+      "indiaGross": 25.98,
+      "worldwide": null,
+      "overseas": null,
+      "daily": [
+        {
+          "day": 1,
+          "net": 1.95,
+          "date": "2026-10-02"
+        },
+        {
+          "day": 2,
+          "net": 2.15,
+          "date": "2026-10-03"
+        },
+        {
+          "day": 3,
+          "net": 3,
+          "date": "2026-10-04"
+        },
+        {
+          "day": 4,
+          "net": 1.25,
+          "date": "2026-10-05"
+        },
+        {
+          "day": 5,
+          "net": 1.69,
+          "date": "2026-10-06"
+        },
+        {
+          "day": 6,
+          "net": 1.19,
+          "date": "2026-10-07"
+        },
+        {
+          "day": 7,
+          "net": 1.06,
+          "date": "2026-10-08"
+        },
+        {
+          "day": 8,
+          "net": 1.1,
+          "date": "2026-10-09"
+        },
+        {
+          "day": 9,
+          "net": 2.12,
+          "date": "2026-10-10"
+        },
+        {
+          "day": 10,
+          "net": 2.33,
+          "date": "2026-10-11"
+        },
+        {
+          "day": 11,
+          "net": 0.6800000000000002,
+          "date": "2026-10-12"
+        },
+        {
+          "day": 12,
+          "net": 0.98,
+          "date": "2026-10-13"
+        },
+        {
+          "day": 13,
+          "net": 0.72,
+          "date": "2026-10-14"
+        },
+        {
+          "day": 14,
+          "net": 0.5,
+          "date": "2026-10-15"
+        },
+        {
+          "day": 15,
+          "net": 0.22000000000000003,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 16,
+          "net": 0.39999999999999997,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 17,
+          "net": 0.53,
+          "date": "2026-10-18"
+        },
+        {
+          "day": 18,
+          "net": 0.22,
+          "date": "2026-10-19"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Doraemon_Castle_of_the_Undersea_Devil_2026_Box_Office_Collection_Day_18",
+      "sourceUpdatedAt": "2026-10-19T16:33:01.000Z",
+      "checkedAt": "2026-10-19T17:17:58.448Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Hollywood"
+    },
+    {
+      "id": "hanuman_ansh_2026",
+      "title": "Hanuman Ansh",
+      "languages": [
+        "Hindi",
+        "Telugu"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/13987.jpg",
+      "day": 74,
+      "reportDate": "2026-10-19",
+      "releaseDate": "2026-08-07",
+      "indiaNet": 339.85,
+      "indiaGross": 401.07,
+      "worldwide": 449.67,
+      "overseas": 48.6,
+      "daily": [
+        {
+          "day": 1,
+          "net": 0.1,
+          "date": "2026-08-07"
+        },
+        {
+          "day": 2,
+          "net": 0.2,
+          "date": "2026-08-08"
+        },
+        {
+          "day": 3,
+          "net": 0.3,
+          "date": "2026-08-09"
+        },
+        {
+          "day": 4,
+          "net": 0.1,
+          "date": "2026-08-10"
+        },
+        {
+          "day": 5,
+          "net": 0.13,
+          "date": "2026-08-11"
+        },
+        {
+          "day": 6,
+          "net": 0.13,
+          "date": "2026-08-12"
+        },
+        {
+          "day": 7,
+          "net": 0.12,
+          "date": "2026-08-13"
+        },
+        {
+          "day": 8,
+          "net": 0.04,
+          "date": "2026-08-14"
+        },
+        {
+          "day": 9,
+          "net": 0.08,
+          "date": "2026-08-15"
+        },
+        {
+          "day": 10,
+          "net": 0.08,
+          "date": "2026-08-16"
+        },
+        {
+          "day": 11,
+          "net": 0.05,
+          "date": "2026-08-17"
+        },
+        {
+          "day": 12,
+          "net": 0.05,
+          "date": "2026-08-18"
+        },
+        {
+          "day": 13,
+          "net": 0.05,
+          "date": "2026-08-19"
+        },
+        {
+          "day": 14,
+          "net": 0.05,
+          "date": "2026-08-20"
+        },
+        {
+          "day": 15,
+          "net": 0.15,
+          "date": "2026-08-21"
+        },
+        {
+          "day": 16,
+          "net": 0.85,
+          "date": "2026-08-22"
+        },
+        {
+          "day": 17,
+          "net": 2.2,
+          "date": "2026-08-23"
+        },
+        {
+          "day": 18,
+          "net": 1.25,
+          "date": "2026-08-24"
+        },
+        {
+          "day": 19,
+          "net": 2.35,
+          "date": "2026-08-25"
+        },
+        {
+          "day": 20,
+          "net": 1.5,
+          "date": "2026-08-26"
+        },
+        {
+          "day": 21,
+          "net": 2.1,
+          "date": "2026-08-27"
+        },
+        {
+          "day": 22,
+          "net": 6.25,
+          "date": "2026-08-28"
+        },
+        {
+          "day": 23,
+          "net": 9.25,
+          "date": "2026-08-29"
+        },
+        {
+          "day": 24,
+          "net": 12.75,
+          "date": "2026-08-30"
+        },
+        {
+          "day": 25,
+          "net": 5.5,
+          "date": "2026-08-31"
+        },
+        {
+          "day": 26,
+          "net": 8.5,
+          "date": "2026-09-01"
+        },
+        {
+          "day": 27,
+          "net": 7.75,
+          "date": "2026-09-02"
+        },
+        {
+          "day": 28,
+          "net": 11,
+          "date": "2026-09-03"
+        },
+        {
+          "day": 29,
+          "net": 10,
+          "date": "2026-09-04"
+        },
+        {
+          "day": 30,
+          "net": 16.5,
+          "date": "2026-09-05"
+        },
+        {
+          "day": 31,
+          "net": 22.75,
+          "date": "2026-09-06"
+        },
+        {
+          "day": 32,
+          "net": 10,
+          "date": "2026-09-07"
+        },
+        {
+          "day": 33,
+          "net": 10.75,
+          "date": "2026-09-08"
+        },
+        {
+          "day": 34,
+          "net": 10.25,
+          "date": "2026-09-09"
+        },
+        {
+          "day": 35,
+          "net": 10,
+          "date": "2026-09-10"
+        },
+        {
+          "day": 36,
+          "net": 10.5,
+          "date": "2026-09-11"
+        },
+        {
+          "day": 37,
+          "net": 18.5,
+          "date": "2026-09-12"
+        },
+        {
+          "day": 38,
+          "net": 22.5,
+          "date": "2026-09-13"
+        },
+        {
+          "day": 39,
+          "net": 8.25,
+          "date": "2026-09-14"
+        },
+        {
+          "day": 40,
+          "net": 8.25,
+          "date": "2026-09-15"
+        },
+        {
+          "day": 41,
+          "net": 6,
+          "date": "2026-09-16"
+        },
+        {
+          "day": 42,
+          "net": 6.25,
+          "date": "2026-09-17"
+        },
+        {
+          "day": 43,
+          "net": 5,
+          "date": "2026-09-18"
+        },
+        {
+          "day": 44,
+          "net": 9.75,
+          "date": "2026-09-19"
+        },
+        {
+          "day": 45,
+          "net": 13.75,
+          "date": "2026-09-20"
+        },
+        {
+          "day": 46,
+          "net": 4.15,
+          "date": "2026-09-21"
+        },
+        {
+          "day": 47,
+          "net": 4.9,
+          "date": "2026-09-22"
+        },
+        {
+          "day": 48,
+          "net": 3.75,
+          "date": "2026-09-23"
+        },
+        {
+          "day": 49,
+          "net": 3.5,
+          "date": "2026-09-24"
+        },
+        {
+          "day": 50,
+          "net": 3.35,
+          "date": "2026-09-25"
+        },
+        {
+          "day": 51,
+          "net": 6.5,
+          "date": "2026-09-26"
+        },
+        {
+          "day": 52,
+          "net": 9,
+          "date": "2026-09-27"
+        },
+        {
+          "day": 53,
+          "net": 2.25,
+          "date": "2026-09-28"
+        },
+        {
+          "day": 54,
+          "net": 3,
+          "date": "2026-09-29"
+        },
+        {
+          "day": 55,
+          "net": 2.2,
+          "date": "2026-09-30"
+        },
+        {
+          "day": 56,
+          "net": 2.9,
+          "date": "2026-10-01"
+        },
+        {
+          "day": 57,
+          "net": 2.25,
+          "date": "2026-10-02"
+        },
+        {
+          "day": 58,
+          "net": 2.1,
+          "date": "2026-10-03"
+        },
+        {
+          "day": 59,
+          "net": 3,
+          "date": "2026-10-04"
+        },
+        {
+          "day": 60,
+          "net": 0.75,
+          "date": "2026-10-05"
+        },
+        {
+          "day": 61,
+          "net": 1,
+          "date": "2026-10-06"
+        },
+        {
+          "day": 62,
+          "net": 0.75,
+          "date": "2026-10-07"
+        },
+        {
+          "day": 63,
+          "net": 0.75,
+          "date": "2026-10-08"
+        },
+        {
+          "day": 64,
+          "net": 1.2,
+          "date": "2026-10-09"
+        },
+        {
+          "day": 65,
+          "net": 2.5,
+          "date": "2026-10-10"
+        },
+        {
+          "day": 66,
+          "net": 2.8,
+          "date": "2026-10-11"
+        },
+        {
+          "day": 67,
+          "net": 1.25,
+          "date": "2026-10-12"
+        },
+        {
+          "day": 68,
+          "net": 1.35,
+          "date": "2026-10-13"
+        },
+        {
+          "day": 69,
+          "net": 1.25,
+          "date": "2026-10-14"
+        },
+        {
+          "day": 70,
+          "net": 0.6499999999999999,
+          "date": "2026-10-15"
+        },
+        {
+          "day": 71,
+          "net": 0.15000000000000002,
+          "date": "2026-10-16"
+        },
+        {
+          "day": 72,
+          "net": 0.26,
+          "date": "2026-10-17"
+        },
+        {
+          "day": 73,
+          "net": 0.46,
+          "date": "2026-10-18"
+        }
+      ],
+      "sourceUrl": "https://www.sacnilk.com/quicknews/Hanuman_Ansh_2026_Box_Office_Collection_Day_74",
+      "sourceUpdatedAt": "2026-10-18T19:59:10.000Z",
+      "checkedAt": "2026-10-19T17:17:58.461Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "estimate",
+      "coverage": "active-report",
+      "warnings": [],
+      "industry": "Bollywood"
+    },
+    {
+      "id": "danger_devdas_2026",
+      "title": "Danger Devdas",
+      "languages": [
+        "Odia"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14300.jpg?v=499",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.18,
+      "indiaGross": 0.21,
+      "worldwide": 0.21,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Odia Cinema"
+    },
+    {
+      "id": "monsterthe_ultimate_2026",
+      "title": "Monster-The Ultimate",
+      "languages": [
+        "Odia"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14306.jpg",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.13,
+      "indiaGross": 0.14,
+      "worldwide": 0.14,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Odia Cinema"
+    },
+    {
+      "id": "shaun_the_sheep_the_beast_of_mossy_bottom_2026",
+      "title": "Shaun the Sheep: The Beast of Mossy Bottom",
+      "languages": [
+        "English"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14295.jpg?v=455",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.12,
+      "indiaGross": 0.13,
+      "worldwide": 0.13,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Hollywood"
+    },
+    {
+      "id": "sohla_2026",
+      "title": "Sohla",
+      "languages": [
+        "Marathi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14291.jpg?v=452",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.11,
+      "indiaGross": 0.13,
+      "worldwide": 0.13,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Marathi Film"
+    },
+    {
+      "id": "madhumallati_2026",
+      "title": "Madhumallati",
+      "languages": [
+        "Odia"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14303.jpg?v=501",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.07,
+      "indiaGross": 0.08,
+      "worldwide": 0.08,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Odia Cinema"
+    },
+    {
+      "id": "awm_agney_weds_minal_2026",
+      "title": "AWM: Agney Weds Minal",
+      "languages": [
+        "Odia"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14282.jpg?v=428",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.05,
+      "indiaGross": 0.06,
+      "worldwide": 0.06,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Odia Cinema"
+    },
+    {
+      "id": "kranti_2026",
+      "title": "Kranti",
+      "languages": [
+        "Marathi"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14301.jpg?v=500",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.03,
+      "indiaGross": 0.03,
+      "worldwide": 0.03,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Marathi Film"
+    },
+    {
+      "id": "mohangiri_sapnara_goan_2026",
+      "title": "Mohangiri: Sapnara Goan",
+      "languages": [
+        "Odia"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14307.jpg",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.02,
+      "indiaGross": 0.02,
+      "worldwide": 0.02,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Odia Cinema"
+    },
+    {
+      "id": "prekshakarude_sradhaykku_2026",
+      "title": "Prekshakarude Sradhaykku",
+      "languages": [
+        "Malayalam"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14299.jpg?v=498",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.02,
+      "indiaGross": 0.02,
+      "worldwide": 0.02,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Mollywood"
+    },
+    {
+      "id": "bhagya_2026",
+      "title": "Bhagya",
+      "languages": [
+        "Assamese"
+      ],
+      "poster": "https://cdn.sacnilk.com/image/movie/2026/14305.jpg",
+      "day": 4,
+      "reportDate": null,
+      "releaseDate": null,
+      "indiaNet": 0.01,
+      "indiaGross": 0.01,
+      "worldwide": 0.01,
+      "overseas": null,
+      "daily": [],
+      "sourceUrl": "https://www.sacnilk.com/entertainmenttopbar/Box_Office_Collection?hl=en",
+      "sourceUpdatedAt": null,
+      "checkedAt": "2026-10-19T17:12:32.873Z",
+      "lastSeenAt": "2026-10-19T17:12:32.873Z",
+      "status": "reported",
+      "coverage": "recent-release",
+      "warnings": [
+        "Source listing does not state the reporting cutoff. Theatre availability is not confirmed."
+      ],
+      "industry": "Jollywood"
+    }
+  ],
+  "checkedAt": "2026-10-19T17:17:58.463Z",
+  "lastAttemptAt": null,
+  "nextCheckAt": null,
+  "sourceStatus": "initial",
+  "errors": []
+}
