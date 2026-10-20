@@ -1,6 +1,6 @@
 # CineTracker
 
-See `START_HERE.md` for installation and local database setup.
+created by Devanarayanan
 
 A private, responsive box-office web app built with React, Vinext, Cloudflare Workers and D1.
 
