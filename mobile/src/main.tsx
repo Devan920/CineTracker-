@@ -9,6 +9,8 @@ import Home from '../../app/page';
 import {SOURCE} from '../../lib/boxoffice';
 import {resolveTheme, validTheme, THEME_KEY} from '../../lib/appearance';
 import {Collector} from './collector';
+import {UpdateChecker, RELEASES_URL, UPDATE_INTERVAL} from './updates';
+import buildInfo from './build-info.json';
 import '../../app/globals.css';
 import '../../app/mobile.css';
 import '../../app/redesign.css';
@@ -34,7 +36,29 @@ if (Capacitor.isNativePlatform()) {
     if (new TextEncoder().encode(result.data).byteLength > 3000000) throw new Error('Report exceeds the size limit.');
     return result.data;
   });
+  const appInfo = await App.getInfo().catch(() => ({version: buildInfo.version, build: String(buildInfo.versionCode)}));
+  const updater = new UpdateChecker({
+    version: appInfo.version, build: Number(appInfo.build), storage: localStorage,
+    online: () => navigator.onLine,
+    async fetchReleases() {
+      const response = await CapacitorHttp.get({
+        url: RELEASES_URL, headers: {Accept: 'application/vnd.github+json'},
+        responseType: 'json', disableRedirects: true, connectTimeout: 10000, readTimeout: 15000,
+      });
+      if (response.status === 403 || response.status === 429) throw new Error('The update service is busy. Please try again later.');
+      if (response.status !== 200) throw new Error('Could not reach the update service. Please try again.');
+      if (response.url && new URL(response.url).origin !== 'https://api.github.com') throw new Error('Unexpected update service response.');
+      const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+      if (JSON.stringify(data).length > 2000000) throw new Error('The update response is too large.');
+      return data;
+    },
+  });
+  setTimeout(() => {void updater.check();}, 2500);
+  setInterval(() => {if (document.visibilityState === 'visible') void updater.check();}, UPDATE_INTERVAL);
+  window.addEventListener('online', () => {void updater.check();});
   window.cinetrackerNative = {
+    version: appInfo.version,
+    updates: updater,
     async request(path, init) {
       if (init?.signal?.aborted) throw new DOMException('Request cancelled.', 'AbortError');
       if (path === '/api/report' && (!init?.method || init.method === 'GET')) return Response.json(collector.getReport());
@@ -51,7 +75,10 @@ if (Capacitor.isNativePlatform()) {
     },
   };
   App.addListener('appStateChange', ({isActive}) => {
-    if (isActive) document.dispatchEvent(new Event('visibilitychange'));
+    if (isActive) {
+      document.dispatchEvent(new Event('visibilitychange'));
+      void updater.check();
+    }
   });
   App.addListener('backButton', async () => {
     const dialog = document.querySelector<HTMLDialogElement>('dialog[open]');

@@ -19,7 +19,9 @@ writeFileSync(manifest,xml);
 mkdirSync('android/app/src/main/res/drawable',{recursive:true});
 // Reuse the existing app icon without introducing new branding.
 copyFileSync('../public/icons/icon-512.png','android/app/src/main/res/drawable/cinetracker_icon.png');
+const build=JSON.parse(readFileSync('src/build-info.json','utf8'));
+if(!/^\d+\.\d+\.\d+$/.test(build.version)||!Number.isSafeInteger(build.versionCode)||build.versionCode<1)throw new Error('Invalid Android version metadata');
 let gradle=readFileSync('android/app/build.gradle','utf8');
-gradle=gradle.replace(/versionCode \d+/,'versionCode 1').replace(/versionName "[^"]+"/,'versionName "1.0.0"');
+gradle=gradle.replace(/versionCode \d+/,'versionCode '+build.versionCode).replace(/versionName "[^"]+"/,'versionName "'+build.version+'"');
 writeFileSync('android/app/build.gradle',gradle);
 console.log('Android project prepared at ' + path.resolve('android'));

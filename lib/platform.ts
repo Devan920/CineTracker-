@@ -1,6 +1,10 @@
 
+import type {AppUpdater} from './app-updates';
+
 /** Optional Android bridge; ordinary website requests keep their existing behavior. */
 export type NativeBridge = {
+  version?: string;
+  updates?: AppUpdater;
   request: (path: string, init?: RequestInit) => Promise<Response>;
   shareCsv: (contents: string, filename: string) => Promise<void>;
 };

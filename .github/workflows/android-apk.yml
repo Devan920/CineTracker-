@@ -36,7 +36,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Test report persistence, discovery, and failures
+      - name: Test collection and app update behavior
         run: npm test
       - name: Type-check and bundle app screens
         run: npm run build
@@ -54,12 +54,7 @@ jobs:
       - name: Verify APK and package source
         working-directory: .
         run: |
-          mkdir -p artifacts
-          cp mobile/android/app/build/outputs/apk/debug/app-debug.apk artifacts/CineTracker-1.0.0-debug.apk
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose artifacts/CineTracker-1.0.0-debug.apk
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging artifacts/CineTracker-1.0.0-debug.apk > artifacts/apk-info.txt
-          head -n 14 artifacts/apk-info.txt
-          sha256sum artifacts/CineTracker-1.0.0-debug.apk > artifacts/SHA256SUMS.txt
+          node mobile/scripts/package-apk.mjs
           zip -q -r artifacts/CineTracker-Android-Source.zip mobile app lib public .github/workflows/android-apk.yml -x 'mobile/node_modules/*' 'mobile/android/.gradle/*' 'mobile/android/build/*' 'mobile/android/app/build/*' 'mobile/android/local.properties' 'mobile/dist/*'
       - name: Check live publisher availability
         run: node tests/live-check.mjs
@@ -69,3 +64,23 @@ jobs:
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
+
+  publish:
+    needs: android
+    if: github.repository == 'Devan920/CineTracker-' && github.ref == 'refs/heads/codex/cinetracker-android-apk'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: CineTracker-Android
+          path: artifacts
+      - name: Publish verified Android test version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node mobile/scripts/publish-release.mjs

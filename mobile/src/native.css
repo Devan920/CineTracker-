@@ -3,3 +3,30 @@ html[data-native="true"] { overscroll-behavior-y: none; }
 html[data-native="true"] body { overscroll-behavior-y: none; }
 html[data-native="true"] .app-settings-button span { display: none; }
 html[data-native="true"] .install-details { display: none; }
+
+.app-update-banner { position: fixed; z-index: 75; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(540px, calc(100% - 28px)); display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: 18px; background: #fff; color: #17251c; border: 1px solid #cad9cd; box-shadow: 0 8px 32px #12231926; }
+.app-update-banner > svg { flex-shrink: 0; color: #39754c; }
+.app-update-banner > div { flex: 1; min-width: 0; }
+.app-update-banner strong { font-size: 14px; }
+.app-update-banner p { font-size: 12px; margin: 4px 0 0; }
+.app-update-banner .button { white-space: nowrap; min-height: 44px; padding: 8px 10px; font-size: 12px; }
+.app-update-banner .icon-button { flex-shrink: 0; min-width: 36px; min-height: 44px; }
+.app-update-section { padding: 24px 0; border-top: 1px solid #dfe5df; }
+.app-update-heading { display: flex; align-items: center; gap: 10px; }
+.app-update-heading h3 { margin: 0; font-size: 16px; }
+.app-update-heading p, .app-update-status, .app-update-release p { font-size: 13px; line-height: 1.6; }
+.app-update-heading p { margin: 4px 0 0; opacity: .72; }
+.app-update-status { margin: 14px 0; }
+.app-update-check { min-height: 44px; }
+.app-update-check:disabled { opacity: .6; }
+.app-update-checked { display: block; margin-top: 10px; font-size: 11px; opacity: .72; }
+.app-update-release { background: #edf5ee; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.app-update-release .button { min-height: 44px; text-decoration: none; }
+.app-update-notes { display: inline-block; padding: 12px; font-size: 13px; color: inherit; }
+.app-update-spin { animation: app-update-spin 1s linear infinite; }
+@keyframes app-update-spin { to {transform: rotate(360deg);} }
+html[data-theme="dark"] .app-update-banner { background: #17241e; color: #eff6f0; border-color: #3b5143; }
+html[data-theme="dark"] .app-update-banner > svg { color: #a5d7ae; }
+html[data-theme="dark"] .app-update-section { border-color: #35453b; }
+html[data-theme="dark"] .app-update-release { background: #243b2b; }
+@media (prefers-reduced-motion: reduce) { .app-update-spin { animation: none; } }
