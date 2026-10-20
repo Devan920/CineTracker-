@@ -10,6 +10,7 @@ try{
  if(!ready)throw new Error('Preview server did not start');
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
+ await page.addInitScript(()=>{window.cinetrackerNative={request:(path,init)=>fetch(path,init),shareCsv:async()=>{}};});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const now=new Date().toISOString();
  const report={movies:[{id:'test',title:'Test Film',languages:['Malayalam'],industry:'Mollywood',poster:null,day:1,reportDate:null,releaseDate:null,indiaNet:1,indiaGross:1.2,worldwide:2,overseas:.8,daily:[],sourceUrl:'https://www.sacnilk.com/live',sourceUpdatedAt:now,checkedAt:now,lastSeenAt:now,status:'reported',coverage:'active-report',warnings:[]}],checkedAt:now,lastAttemptAt:now,nextCheckAt:new Date(Date.now()+1200000).toISOString(),errors:[],sourceStatus:'ok'};
@@ -19,6 +20,11 @@ try{
  await page.getByRole('button',{name:'Save Test Film',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:/pause/i}).count(),0);
  const nav=page.getByRole('navigation',{name:'Mobile navigation'});
+ console.log('Navigation diagnostics: '+JSON.stringify(await page.evaluate(()=>{
+   const nav=document.querySelector('.mobile-bottom-nav'), button=nav?.lastElementChild;
+   const rect=button?.getBoundingClientRect(), style=nav?getComputedStyle(nav):null;
+   return {width:innerWidth,viewport:visualViewport&&{width:visualViewport.width,height:visualViewport.height,scale:visualViewport.scale},documentWidth:document.documentElement.scrollWidth,viewportMeta:document.querySelector('meta[name=viewport]')?.content,nav:nav?.getBoundingClientRect().toJSON(),button:rect?.toJSON(),position:style?.position,zIndex:style?.zIndex,hit:rect?document.elementsFromPoint(rect.x+rect.width/2,rect.y+rect.height/2).slice(0,5).map(e=>e.tagName+'.'+e.className):[]};
+ })));
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('button',{name:'Dark',exact:true}).click();
  assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
