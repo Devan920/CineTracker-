@@ -23,3 +23,20 @@ export default function SocialLinks() {
     <p className="social-hint">Links open in a new tab or the installed social app.</p>
   </section>;
 }
+
+export function FeedbackLinks() {
+  return <section className="social-section feedback-section" aria-labelledby="feedback-title">
+    <div className="settings-section-heading">
+      <h3 id="feedback-title">Send feedback</h3>
+      <p>Found a bug or have an idea? Message Devanarayanan.</p>
+    </div>
+    <div className="social-links">{socials.filter(social => social.id !== 'facebook').map(social =>
+      <a key={social.id} className="social-link" href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`Send feedback on ${social.label}`}>
+        <span className={`social-icon ${social.id}`}><SocialIcon id={social.id}/></span>
+        <span className="social-label"><strong>{social.label}</strong><small>{social.id === 'instagram' ? 'Open profile to message' : 'Open chat to send feedback'}</small></span>
+        <ArrowUpRight size={18} className="social-arrow" aria-hidden="true"/>
+      </a>
+    )}</div>
+    <p className="social-hint">Choose a platform, then type and send your feedback there.</p>
+  </section>;
+}
