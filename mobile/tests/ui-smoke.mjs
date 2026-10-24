@@ -11,17 +11,17 @@ try{
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
  await page.addInitScript(()=>{
-  let state={status:'idle',installedVersion:'1.1.1',installedBuild:3,latest:null,checkedAt:null,dismissedBuild:null,message:null};
+  let state={status:'idle',installedVersion:'1.1.2',installedBuild:4,latest:null,checkedAt:null,dismissedBuild:null,message:null};
   let outcome='current'; const listeners=new Set();
-  const latest={version:'1.2.0',versionCode:4,publishedAt:'2026-10-20T18:00:00Z',
-   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.2.0-4/CineTracker-1.2.0-debug.apk',
-   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.2.0-4'};
+  const latest={version:'1.2.0',versionCode:5,publishedAt:'2026-10-20T18:00:00Z',
+   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.2.0-5/CineTracker-1.2.0-debug.apk',
+   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.2.0-5'};
   const publish=patch=>{state={...state,...patch};for(const fn of listeners)fn();};
   window.addEventListener('test:update-feed',event=>{
    outcome=event.detail;
    if(outcome==='available')publish({status:'available',latest,checkedAt:new Date().toISOString()});
   });
-  window.cinetrackerNative={version:'1.1.1',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},updates:{
+  window.cinetrackerNative={version:'1.1.2',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},updates:{
    getSnapshot:()=>state,subscribe:fn=>{listeners.add(fn);return()=>listeners.delete(fn);},
    dismiss:()=>publish({dismissedBuild:state.latest?.versionCode??null}),
    check:async()=>{
@@ -51,7 +51,7 @@ try{
  assert.ok(navBox && navBox.y+navBox.height<=845,'Bottom navigation must stay inside the visible phone screen');
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('heading',{name:'App updates',exact:true}).waitFor();
- await page.getByText('Installed version 1.1.1',{exact:true}).waitFor();
+ await page.getByText('Installed version 1.1.2',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('No newer version is available.',{exact:true}).waitFor();
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'error'})));
@@ -62,7 +62,7 @@ try{
  await page.getByRole('complementary',{name:'App update available'}).waitFor();
  await page.getByRole('button',{name:'View update',exact:true}).click();
  const download=page.getByRole('link',{name:'Download update',exact:true});
- assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.2.0-4/CineTracker-1.2.0-debug.apk');
+ assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.2.0-5/CineTracker-1.2.0-debug.apk');
  await download.scrollIntoViewIfNeeded();
  const clickedLink=page.waitForEvent('popup');
  await download.click();
