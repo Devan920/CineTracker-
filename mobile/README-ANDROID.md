@@ -27,7 +27,7 @@ Open the generated mobile/android folder in Android Studio. For future web chang
 
 ## Download and signing
 
-The GitHub Actions workflow uploads CineTracker-1.0.0-debug.apk and an Android-ready source archive. The APK is signed with a development key for personal installation/testing, not a production release key. A later build can use a different debug key and may require uninstalling the previous test build. A production release requires your own securely backed-up signing key, supplied as a CI secret or through Android Studio. No private signing keys are committed or included in downloadable artifacts.
+The GitHub Actions workflow uploads a versioned CineTracker-VERSION-debug.apk and an Android-ready source archive. The APK is signed with a development key for personal installation/testing, not a production release key. A later build can use a different debug key and may require uninstalling the previous test build. A production release requires your own securely backed-up signing key, supplied as a CI secret or through Android Studio. No private signing keys are committed or included in downloadable artifacts.
 
 Website hosting and Android builds are separate. This change does not publish a new website version or create an unattended server scheduler.
 
@@ -68,3 +68,24 @@ Settings > Send feedback opens Devanarayanan's provided Instagram profile or
 Telegram chat. The user writes and sends their message in that platform. No
 feedback server, new sign-in flow, automatic message, or additional device
 permission is needed. The original social links are also retained.
+
+
+## Movie discovery and archive (1.2.0)
+
+Search combines the current feed, cached lifetime records and the public English
+Wikipedia search API. Exact titles and release years are matched; ambiguous
+results require a selection. Cast/director come from film infoboxes. Story
+excerpts are plain text from the Plot/Synopsis/Premise section, with attribution
+and a CC BY-SA 4.0 link. No API key or private credential is embedded.
+
+The archive reads public Sacnilk records pages for India and five film
+industries. It uses explicit displayed release years, never the year in a URL
+slug (which can predate a postponed release). Current-year films and active-feed
+titles are excluded. Exact mobile-card amounts are validated; rounded desktop
+figures are not substituted. This is a selection of available lifetime reports,
+not every historical release or an audited final revenue register.
+
+Archive results are cached for 24 hours, with Refresh archive to recheck. Film
+metadata is cached for 7 days; failed rechecks keep original timestamps. Source
+rules and request pacing are respected. Saved archive/catalogue movies persist
+alongside the original watchlist IDs.

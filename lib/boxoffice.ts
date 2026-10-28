@@ -3,6 +3,7 @@ export const SOURCE = 'https://www.sacnilk.com';
 export const CATALOG_URL = SOURCE + '/entertainmenttopbar/Box_Office_Collection?hl=en';
 export type Daily = { day: number; date: string | null; net: number | null };
 export type Movie = {
+  year?:number; archive?:boolean; wikiPageId?:number;
   id: string; title: string; languages: string[]; poster: string | null; industry?: string | null;
   day: number | null; reportDate: string | null; releaseDate: string | null;
   indiaNet: number | null; indiaGross: number | null; worldwide: number | null; overseas: number | null;

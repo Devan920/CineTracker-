@@ -9,12 +9,15 @@ import Home from '../../app/page';
 import {SOURCE} from '../../lib/boxoffice';
 import {resolveTheme, validTheme, THEME_KEY} from '../../lib/appearance';
 import {Collector} from './collector';
+import {MovieLibrary} from './movie-library';
+import {responseText} from './http-text';
 import {UpdateChecker, RELEASES_URL, UPDATE_INTERVAL} from './updates';
 import buildInfo from './build-info.json';
 import '../../app/globals.css';
 import '../../app/mobile.css';
 import '../../app/redesign.css';
 import './native.css';
+import '../../app/cinema.css';
 
 let preference: string = 'system';
 try { preference = localStorage.getItem(THEME_KEY) ?? 'system'; } catch {}
@@ -22,20 +25,24 @@ document.documentElement.dataset.theme = resolveTheme(validTheme(preference), ma
 
 if (Capacitor.isNativePlatform()) {
   document.documentElement.dataset.native = 'true';
-  const collector = new Collector(localStorage, async url => {
-    if (new URL(url).origin !== SOURCE) throw new Error('Unapproved report address.');
-    const result = await CapacitorHttp.get({
-      url,
-      headers: {'Accept': 'text/html,text/plain', 'User-Agent': 'CinePulse/1.0 (CineTracker Android; public collection reports)'},
-      responseType: 'text', disableRedirects: true, connectTimeout: 10000, readTimeout: 18000,
-    });
-    if (result.status >= 300 && result.status < 400) throw new Error('The report address changed. Please try again later.');
-    if (result.status < 200 || result.status >= 300) throw new Error('Report returned HTTP ' + result.status + '.');
-    if (result.url && new URL(result.url).origin !== SOURCE) throw new Error('Unexpected report destination.');
-    if (typeof result.data !== 'string') throw new Error('Unexpected report format.');
-    if (new TextEncoder().encode(result.data).byteLength > 3000000) throw new Error('Report exceeds the size limit.');
-    return result.data;
-  });
+  let sourceQueue:Promise<unknown>=Promise.resolve(),lastSourceAt=0;
+  const readPage=async(url:string):Promise<string>=>{
+    const parsed=new URL(url);
+    if(![SOURCE,'https://en.wikipedia.org'].includes(parsed.origin))throw new Error('Unsupported movie information address.');
+    if(parsed.origin==='https://en.wikipedia.org'&&parsed.pathname!=='/w/api.php')throw new Error('Unsupported movie information address.');
+    const request=async()=>{
+      if(parsed.origin===SOURCE){const wait=1000-(Date.now()-lastSourceAt);if(wait>0)await new Promise(r=>setTimeout(r,wait));lastSourceAt=Date.now();}
+      const result=await CapacitorHttp.request({url,method:'GET',
+        headers:{Accept:parsed.origin===SOURCE?'text/html,text/plain':'application/json',
+          'User-Agent':'CinePulse/1.0 (CineTracker/1.2; https://github.com/Devan920/CineTracker-)'},
+        responseType:'text',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:18000});
+      return responseText(result,parsed.origin);
+    };
+    if(parsed.origin!==SOURCE)return request();
+    const pending=sourceQueue.then(request,request);sourceQueue=pending.catch(()=>{});return pending;
+  };
+  const collector=new Collector(localStorage,readPage);
+  const library=new MovieLibrary(readPage,localStorage);
   const appInfo = await App.getInfo().catch(() => ({version: buildInfo.version, build: String(buildInfo.versionCode)}));
   const updater = new UpdateChecker({
     version: appInfo.version, build: Number(appInfo.build), storage: localStorage,
@@ -61,6 +68,19 @@ if (Capacitor.isNativePlatform()) {
     updates: updater,
     async request(path, init) {
       if (init?.signal?.aborted) throw new DOMException('Request cancelled.', 'AbortError');
+      const address=new URL(path,'https://localhost');
+      try{
+        let data:unknown;
+        if(address.pathname==='/api/archive')data=await library.getArchive(address.searchParams.get('refresh')==='1');
+        else if(address.pathname==='/api/movies/search')data={movies:await library.search(address.searchParams.get('q')??'')};
+        else if(address.pathname==='/api/movies/details'){
+          const title=(address.searchParams.get('title')??'').slice(0,180);
+          const year=Number(address.searchParams.get('year'))||null,id=Number(address.searchParams.get('pageid'))||undefined;
+          if(!title||year&&(year<1880||year>2100)||id&&(!Number.isInteger(id)||id<1))return Response.json({error:'Invalid movie request.'},{status:400});
+          data=await library.getDetails(title,year,id,address.searchParams.get('refresh')==='1');
+        }
+        if(data!==undefined){if(init?.signal?.aborted)throw new DOMException('Request cancelled.','AbortError');return Response.json(data);}
+      }catch(error){return Response.json({error:error instanceof Error?error.message:'Movie information is unavailable.'},{status:503});}
       if (path === '/api/report' && (!init?.method || init.method === 'GET')) return Response.json(collector.getReport());
       if (path === '/api/refresh' && init?.method === 'POST') return Response.json(await collector.step());
       return Response.json({error: 'Unknown app request.'}, {status: 404});
@@ -105,3 +125,4 @@ if (Capacitor.isNativePlatform()) {
   });
 }
 createRoot(document.getElementById('root')!).render(<Home/>);
+
