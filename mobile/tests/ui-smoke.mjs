@@ -12,17 +12,19 @@ try{
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
  await page.addInitScript(()=>{
-  let state={status:'idle',installedVersion:'1.2.0',installedBuild:5,latest:null,checkedAt:null,dismissedBuild:null,message:null};
-  let outcome='current'; const listeners=new Set();
-  const latest={version:'1.3.0',versionCode:6,publishedAt:'2026-10-20T18:00:00Z',
-   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.3.0-6/CineTracker-1.3.0-debug.apk',
-   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.3.0-6'};
+  let state={status:'idle',installedVersion:'1.3.0',installedBuild:6,latest:null,checkedAt:null,dismissedBuild:null,message:null};
+  let outcome='current',locationOutcome='denied'; const listeners=new Set();
+  window.__locationRequests=0;
+  window.addEventListener('test:location',event=>{locationOutcome=event.detail;});
+  const latest={version:'1.4.0',versionCode:7,publishedAt:'2026-10-20T18:00:00Z',
+   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.4.0-7/CineTracker-1.4.0-debug.apk',
+   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.4.0-7'};
   const publish=patch=>{state={...state,...patch};for(const fn of listeners)fn();};
   window.addEventListener('test:update-feed',event=>{
    outcome=event.detail;
    if(outcome==='available')publish({status:'available',latest,checkedAt:new Date().toISOString()});
   });
-  window.cinetrackerNative={version:'1.2.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},updates:{
+  window.cinetrackerNative={version:'1.3.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
    getSnapshot:()=>state,subscribe:fn=>{listeners.add(fn);return()=>listeners.delete(fn);},
    dismiss:()=>publish({dismissedBuild:state.latest?.versionCode??null}),
    check:async()=>{
@@ -40,6 +42,7 @@ try{
  await page.route('**/api/refresh',route=>route.fulfill({json:{state:'current'}}));
  const older={...report.movies[0],id:'archive-2024',title:'Archive Film',year:2024,day:null,archive:true,indiaNet:40,indiaGross:48,worldwide:70,overseas:22};
  await page.route('**/api/archive*',route=>route.fulfill({json:{movies:[older,report.movies[0]],checkedAt:now,stale:false}}));
+ await page.route('**/api/locations/search*',route=>route.fulfill({json:{towns:[{id:'town:1',label:'Attingal, Kerala',kind:'town',latitude:8.69609,longitude:76.81507}]}}));
  await page.route('**/api/movies/search*',route=>{
   const q=new URL(route.request().url()).searchParams.get('q');
   return route.fulfill({json:{movies:q?.includes('Remake')?[{pageId:101,title:'Remake',year:2013,description:'2013 Malayalam film'},{pageId:102,title:'Remake',year:2015,description:'2015 Hindi film'}]:[]}});
@@ -62,7 +65,7 @@ try{
  assert.ok(navBox && navBox.y+navBox.height<=845,'Bottom navigation must stay inside the visible phone screen');
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('heading',{name:'App updates',exact:true}).waitFor();
- await page.getByText('Installed version 1.2.0',{exact:true}).waitFor();
+ await page.getByText('Installed version 1.3.0',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('No newer version is available.',{exact:true}).waitFor();
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'error'})));
@@ -73,13 +76,13 @@ try{
  await page.getByRole('complementary',{name:'App update available'}).waitFor();
  await page.getByRole('button',{name:'View update',exact:true}).click();
  const download=page.getByRole('link',{name:'Download update',exact:true});
- assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.3.0-6/CineTracker-1.3.0-debug.apk');
+ assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.4.0-7/CineTracker-1.4.0-debug.apk');
  await download.scrollIntoViewIfNeeded();
  const clickedLink=page.waitForEvent('popup');
  await download.click();
  const popup=await clickedLink;
  await popup.waitForLoadState('domcontentloaded');
- assert.ok(popup.url().endsWith('/CineTracker-1.3.0-debug.apk'));
+ assert.ok(popup.url().endsWith('/CineTracker-1.4.0-debug.apk'));
  await popup.close();
  await page.getByRole('button',{name:'Close settings'}).click();
  await page.getByRole('button',{name:'Dismiss update notification',exact:true}).click();
@@ -107,6 +110,27 @@ try{
  await page.getByText('Lead Actor',{exact:true}).waitFor();
  await page.getByText('A journey brings a group of old friends together.',{exact:true}).waitFor();
  assert.equal(await page.getByRole('link',{name:'CC BY-SA 4.0',exact:true}).getAttribute('href'),'https://creativecommons.org/licenses/by-sa/4.0/');
+ assert.equal(await page.evaluate(()=>window.__locationRequests),0,'Opening a film must not request location automatically');
+ await page.getByRole('tab',{name:'Nearby cinemas',exact:true}).click();
+ await page.getByText('Live availability is not connected.',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Use my location',exact:true}).click();
+ await page.getByText('Location permission was not granted.',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Choose a town',exact:true}).click();
+ await page.getByLabel('Town or city in India').fill('Attingal');
+ await page.getByRole('button',{name:'Find town',exact:true}).click();
+ await page.getByRole('button',{name:'Attingal, Kerala',exact:true}).click();
+ assert.ok(await page.locator('.cinema-card').count()>0,'The bundled cinema directory should find nearby venues');
+ assert.ok((await page.getByRole('link',{name:'Search shows on Google',exact:false}).first().getAttribute('href')).startsWith('https://www.google.com/search?'));
+ assert.equal(await page.getByRole('link',{name:'Open BookMyShow',exact:false}).getAttribute('href'),'https://in.bookmyshow.com/');
+ await page.getByRole('button',{name:'Forget selected area',exact:true}).click();
+ await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:location',{detail:'granted'})));
+ await page.getByRole('button',{name:'Use my location',exact:true}).click();
+ await page.getByText('Your approximate location',{exact:true}).waitFor();
+ assert.equal(await page.evaluate(()=>Object.keys(localStorage).some(k=>/location|latitude|longitude|area/i.test(k))),false);
+ mkdirSync('../artifacts',{recursive:true});
+ await page.locator('dialog[open]').evaluate(el=>{el.scrollTop=0;});
+ await page.screenshot({path:'../artifacts/ui-cinemas-dark.png',animations:'disabled'});
+ await page.getByRole('tab',{name:'Cast & story',exact:true}).click();
  mkdirSync('../artifacts',{recursive:true});
  assert.notEqual(await page.locator('dialog[open]').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
  await page.screenshot({path:'../artifacts/ui-movie-dark.png',animations:'disabled'});
@@ -125,6 +149,7 @@ try{
  await page.getByText('Story of the 2015 remake.',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Close dialog',exact:true}).click();
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
+ await page.getByText('No area selected. You can also choose a town without location permission.',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Light',exact:true}).click();
  await page.getByRole('button',{name:'Close settings'}).click();
  await nav.getByRole('button',{name:'Overview',exact:true}).click();
@@ -133,6 +158,6 @@ try{
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow on small phones');
  for(const button of await nav.getByRole('button').all()){const box=await button.boundingBox();assert.ok(box&&box.x>=0&&box.x+box.width<=321&&box.y+box.height<=701,'Every navigation button stays on screen');}
  assert.deepEqual(errors,[]);
- console.log('Mobile UI passed: search/remake selection, cast/story, archive isolation/year filter, saved archive persistence, 320px navigation, light/dark themes, settings/socials/credit, updates and download target.');
+ console.log('Mobile UI passed: classic layout, search/cast/archive/watchlist, location opt-in/denial/grant, manual town selection, nearby directory and safe external links, no coordinate persistence, 320px navigation, light/dark themes, settings and app updates.');
 }finally{await browser?.close();server.kill();}
 

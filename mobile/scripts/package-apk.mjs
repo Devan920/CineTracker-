@@ -11,8 +11,11 @@ const tools=process.env.ANDROID_HOME+'/build-tools/36.0.0/';
 execFileSync(tools+'apksigner',['verify','--verbose',apk],{stdio:'inherit'});
 const info=execFileSync(tools+'aapt',['dump','badging',apk],{encoding:'utf8'});
 if(!info.includes("versionCode='"+build.versionCode+"'")||!info.includes("versionName='"+build.version+"'"))throw new Error('APK version does not match update metadata');
+if(!info.includes("android.permission.ACCESS_COARSE_LOCATION")||info.includes("android.permission.ACCESS_FINE_LOCATION")||info.includes("android.permission.ACCESS_BACKGROUND_LOCATION"))throw new Error('APK must request approximate foreground location only.');
+console.log('APK location permissions verified: approximate foreground only.');
 writeFileSync('artifacts/apk-info.txt',info);
 console.log(info.split('\n').slice(0,14).join('\n'));
 const hash=createHash('sha256').update(readFileSync(apk)).digest('hex');
 writeFileSync('artifacts/SHA256SUMS.txt',hash+'  '+name+'\n');
 writeFileSync('artifacts/android-release.json',JSON.stringify({...build,apk:name,sha256:hash,commit:process.env.GITHUB_SHA},null,2)+'\n');
+

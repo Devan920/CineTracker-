@@ -1,28 +1,27 @@
-# CineTracker 1.2.0
+# CineTracker 1.3.0
 
-- New Search tab for current reports and older movie titles. Select a film to
-  see its director, cast and story. Remakes show their release year.
-- Separate Final collections archive with release-year filtering and reported
-  lifetime worldwide totals. Current-year releases and active-feed titles are excluded.
-- Fresh navy and teal layout, prominent search, compact navigation, and matching
-  light and dark themes.
-- Films found through search and the archive can be saved to the Watchlist.
-- Keeps Settings feedback, social links, Devanarayanan credit and app update checks.
+- Restores the classic clean layout and green palette, with stronger headings,
+  movie titles and collection figures. Search and the archive remain available.
+- Movie details now have Cast & story and Nearby cinemas tabs.
+- Use my location requests approximate foreground location after a tap. Nearby
+  cinema distances are calculated on the device from a bundled India directory.
+- Choose a town works without location permission. Town names are looked up
+  through Open-Meteo. The selected area is kept only for the current app session.
+- Nearby cards offer Google show searches and Maps directions. BookMyShow and
+  District can be opened to verify the film, date, time and available seats.
+- Settings includes a Location section and Forget selected area.
 
-Cast and plot depend on available Wikipedia articles. Attribution and the
-CC BY-SA licence accompany excerpts. Lifetime reports cover the available
-published records; re-releases can change totals. Missing figures remain blank.
-Current reports check every 20 minutes while open; the archive is cached for
-24 hours with manual refresh, and film details for 7 days.
+## Availability limitation
 
-## Installing this test build
+This version does not display confirmed film screenings, showtimes or live
+free-seat counts. It has no connected booking inventory provider. Nearby cinemas
+are mapped venue locations and are clearly labelled as unverified for the chosen
+film. Capacity is never presented as vacant seats. Direct live inventory requires
+an authorized cinema/booking-provider integration.
 
-In CineTracker 1.1.0 or later, open Settings > Check for updates > Download update.
-Alternatively, download CineTracker-1.2.0-debug.apk from this release and open it on Android.
+## Installation
 
-This is a development-signed test build. Android may require uninstalling the
-previous test build because debug signing keys differ. Uninstalling removes
-local watchlists and settings. A persistent private release-signing key is
-required before promising in-place production updates.
-
-Update checks do not silently install APKs or run while the app is closed.
+Open Settings > Check for updates > Download update, then install the APK.
+This development-signed build may require uninstalling a previous test build if
+its debug signing key differs. Uninstalling removes local watchlists/settings.
+Updates are downloaded through the built-in checker and installed by the user.

@@ -89,3 +89,34 @@ Archive results are cached for 24 hours, with Refresh archive to recheck. Film
 metadata is cached for 7 days; failed rechecks keep original timestamps. Source
 rules and request pacing are respected. Saved archive/catalogue movies persist
 alongside the original watchlist IDs.
+
+## Classic layout and nearby cinemas (1.3.0)
+
+The classic layout and green colour scheme are restored. Search, archive,
+metadata, watchlists and feedback remain available, with heavier headings and
+movie names. The movie dialog separates Cast & story and Nearby cinemas.
+
+The official Capacitor Geolocation plugin requests only ACCESS_COARSE_LOCATION
+on an explicit Use my location tap. Approximate coordinates are rounded to two
+decimal places and processed locally against the bundled India cinema directory.
+The selected area stays in session memory and can be cleared in Settings.
+Location is not requested on launch or merely opening a film. No background
+tracking or precise-location permission is included.
+
+Town lookup uses the Open-Meteo geocoding API and GeoNames data. It is an explicit
+search, cached in memory, rate-limited on device and limited to Indian places.
+See NOTICE-DATA.md for data licences and service terms.
+
+The bundled cinema directory is a snapshot of mapped venue locations. It does
+not contain current screenings or available-seat inventory. The app makes this
+limitation visible and offers Google show searches, Maps directions and official
+booking-app links. An authorized booking-provider API and a secure backend would
+be needed to display confirmed showtimes and per-show live seat counts directly.
+Never infer vacancies from venue capacity, opening hours, collection figures or
+map proximity.
+
+The preparation script includes a narrow compatibility patch for the pinned
+Geolocation 8.0.0 plugin: `enableHighAccuracy=false` uses the coarse permission
+alias on Android versions below 12 as well. Permission checks are retained.
+Review this patch when upgrading the plugin. APK packaging verifies that coarse
+location is present and fine/background location permissions are absent.

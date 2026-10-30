@@ -1,10 +1,12 @@
 
 import type {AppUpdater} from './app-updates';
+import type {AreaChoice} from './theatres';
 
 /** Optional Android bridge; ordinary website requests keep their existing behavior. */
 export type NativeBridge = {
   version?: string;
   updates?: AppUpdater;
+  location?: {current:()=>Promise<AreaChoice>};
   request: (path: string, init?: RequestInit) => Promise<Response>;
   shareCsv: (contents: string, filename: string) => Promise<void>;
 };
@@ -30,3 +32,4 @@ export async function saveCsv(contents: string, filename: string): Promise<strin
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   return 'Collection report downloaded';
 }
+
