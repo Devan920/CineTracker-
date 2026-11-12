@@ -4,19 +4,19 @@ import { nativeBridge } from '../lib/platform';
 import {AppUpdateBanner,AppUpdateSettings} from './app-updates';
 import SocialLinks,{FeedbackLinks} from './social-links';
 import {LocationSettings} from './movie-theatres';
-import { Check,Download,Monitor,Moon,Settings2,Share2,Smartphone,Sun,WifiOff,X } from 'lucide-react';
+import { Check,Download,Moon,Settings2,Share2,Smartphone,Sun,WifiOff,X } from 'lucide-react';
 import { resolveTheme,THEME_COLORS,THEME_KEY,validTheme,type ThemeMode } from '../lib/appearance';
 type InstallEvent=Event & {prompt:()=>Promise<void>;userChoice:Promise<{outcome:'accepted'|'dismissed'}>};
 export function openAppSettings(){window.dispatchEvent(new Event('cinepulse:preferences'));}
 export default memo(function AppExperience(){
- const [mode,setMode]=useState<ThemeMode>('system'),[systemDark,setSystemDark]=useState(false),[ready,setReady]=useState(false),[open,setOpen]=useState(false),[standalone,setStandalone]=useState(false),[installEvent,setInstallEvent]=useState<InstallEvent|null>(null),[installing,setInstalling]=useState(false),[message,setMessage]=useState(''),[offline,setOffline]=useState(false),[platform,setPlatform]=useState<'ios'|'android'|'desktop'>('desktop');
- const dialog=useRef<HTMLDialogElement>(null),modeRef=useRef<ThemeMode>('system');
+ const [mode,setMode]=useState<ThemeMode>('dark'),[systemDark,setSystemDark]=useState(false),[ready,setReady]=useState(false),[open,setOpen]=useState(false),[standalone,setStandalone]=useState(false),[installEvent,setInstallEvent]=useState<InstallEvent|null>(null),[installing,setInstalling]=useState(false),[message,setMessage]=useState(''),[offline,setOffline]=useState(false),[platform,setPlatform]=useState<'ios'|'android'|'desktop'>('desktop');
+ const dialog=useRef<HTMLDialogElement>(null),modeRef=useRef<ThemeMode>('dark');
  const native=Boolean(nativeBridge());
  const resolved=resolveTheme(mode,systemDark);
  const apply=useCallback((preference:ThemeMode,dark:boolean)=>{const result=resolveTheme(preference,dark);document.documentElement.dataset.theme=result;document.documentElement.style.colorScheme=result;document.querySelectorAll('meta[name="theme-color"]').forEach(el=>el.setAttribute('content',THEME_COLORS[result]));},[]);
  useEffect(()=>{
   const media=window.matchMedia('(prefers-color-scheme: dark)'),display=window.matchMedia('(display-mode: standalone)');
-  let preference:ThemeMode='system';try{preference=validTheme(localStorage.getItem(THEME_KEY));}catch{}
+  let preference:ThemeMode='dark';try{preference=validTheme(localStorage.getItem(THEME_KEY));}catch{}
   modeRef.current=preference;setMode(preference);setSystemDark(media.matches);apply(preference,media.matches);setReady(true);
   const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);setPlatform(ios?'ios':/Android/.test(navigator.userAgent)?'android':'desktop');
   const isStandalone=()=>setStandalone(native||display.matches||Boolean((navigator as Navigator&{standalone?:boolean}).standalone));isStandalone();
@@ -38,7 +38,7 @@ export default memo(function AppExperience(){
   <AppUpdateBanner/>
   {offline&&<div className="connection-banner" role="status"><WifiOff size={15}/><span>You’re offline. Reconnect to update collection reports.</span></div>}
   {open&&<dialog ref={dialog} className="modal preferences-modal" aria-labelledby="preferences-title" onCancel={()=>setOpen(false)} onClick={e=>{if(e.target===e.currentTarget)setOpen(false);}}><div className="modal-inner"><button className="icon-button close" onClick={()=>setOpen(false)} aria-label="Close settings"><X size={21}/></button><span className="eyebrow">APP SETTINGS</span><h2 id="preferences-title">Make it yours.</h2><p className="preferences-intro">{native?'Appearance and a way to stay in touch.':'Appearance, installation and a way to stay in touch.'}</p>
-  <section className="appearance-section"><h3>Appearance</h3><p>Choose your look. System follows your device’s appearance.</p><div className="theme-options" role="group" aria-label="Appearance">{([{value:'light',label:'Light',Icon:Sun},{value:'dark',label:'Dark',Icon:Moon},{value:'system',label:'System',Icon:Monitor}] as const).map(({value,label,Icon})=><button key={value} aria-pressed={mode===value} className={'theme-option '+(mode===value?'chosen':'')} onClick={()=>changeTheme(value)}><span className={'theme-preview preview-'+value}><span/><span/><span/></span><span className="theme-choice-label"><Icon size={15}/>{label}{mode===value&&<Check size={14}/>}</span></button>)}</div></section>
+  <section className="appearance-section"><h3>Appearance</h3><p>Dark is the default. You can switch to light.</p><div className="theme-options" role="group" aria-label="Appearance">{([{value:'light',label:'Light',Icon:Sun},{value:'dark',label:'Dark',Icon:Moon}] as const).map(({value,label,Icon})=><button key={value} aria-pressed={mode===value} className={'theme-option '+(mode===value?'chosen':'')} onClick={()=>changeTheme(value)}><span className={'theme-preview preview-'+value}><span/><span/><span/></span><span className="theme-choice-label"><Icon size={15}/>{label}{mode===value&&<Check size={14}/>}</span></button>)}</div></section>
   <AppUpdateSettings/>
   <LocationSettings/>
   <FeedbackLinks/>
