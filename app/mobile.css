@@ -283,3 +283,19 @@ html[data-theme="dark"] {
   .toolbar-right { min-width: 0; flex-wrap: wrap; }
   .mobile-bottom-nav { width: 100%; }
 }
+
+.movie-trailer { margin: 14px 0 22px; }
+.trailer-heading { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; }
+.trailer-heading > span { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--pale); color: var(--green); flex: 0 0 auto; }
+.trailer-heading h3 { margin: 0 0 4px; font-size: 15px; }
+.trailer-heading p, .trailer-empty p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.trailer-player { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: #05080c; box-shadow: 0 10px 30px #0003; }
+.trailer-player iframe { display: block; width: 100%; height: 100%; border: 0; }
+.trailer-empty { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); }
+.trailer-empty .button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; white-space: nowrap; }
+.trailer-retry { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; }
+@media (max-width: 650px) {
+  .trailer-heading h3 { font-size: 14px; }
+  .trailer-empty { align-items: stretch; }
+  .trailer-empty .button { justify-content: center; width: 100%; }
+}
