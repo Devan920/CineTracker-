@@ -12,7 +12,7 @@ try{
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
  await page.addInitScript(()=>{
-  let state={status:'idle',installedVersion:'1.3.0',installedBuild:6,latest:null,checkedAt:null,dismissedBuild:null,message:null};
+  let state={status:'idle',installedVersion:'1.4.0',installedBuild:7,latest:null,checkedAt:null,dismissedBuild:null,message:null};
   let outcome='current',locationOutcome='denied'; const listeners=new Set();
   window.__locationRequests=0;
   window.addEventListener('test:location',event=>{locationOutcome=event.detail;});
@@ -24,7 +24,7 @@ try{
    outcome=event.detail;
    if(outcome==='available')publish({status:'available',latest,checkedAt:new Date().toISOString()});
   });
-  window.cinetrackerNative={version:'1.3.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
+  window.cinetrackerNative={version:'1.4.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
    getSnapshot:()=>state,subscribe:fn=>{listeners.add(fn);return()=>listeners.delete(fn);},
    dismiss:()=>publish({dismissedBuild:state.latest?.versionCode??null}),
    check:async()=>{

@@ -37,7 +37,7 @@ if (Capacitor.isNativePlatform()) {
       if(parsed.origin===SOURCE){const wait=1000-(Date.now()-lastSourceAt);if(wait>0)await new Promise(r=>setTimeout(r,wait));lastSourceAt=Date.now();}
       const result=await CapacitorHttp.request({url,method:'GET',
         headers:{Accept:parsed.origin===SOURCE?'text/html,text/plain':'application/json',
-          'User-Agent':'CinePulse/1.0 (CineTracker/1.3; https://github.com/Devan920/CineTracker-)'},
+          'User-Agent':'CinePulse/1.0 (CineTracker/1.4; https://github.com/Devan920/CineTracker-)'},
         responseType:'text',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:18000});
       return responseText(result,parsed.origin);
     };
@@ -47,7 +47,7 @@ if (Capacitor.isNativePlatform()) {
   const collector=new Collector(localStorage,readPage);
   const library=new MovieLibrary(readPage,localStorage);
   const towns=new TownSearch(async url=>{
-    const response=await CapacitorHttp.get({url,headers:{Accept:'application/json','User-Agent':'CineTracker/1.3 (https://github.com/Devan920/CineTracker-)'},responseType:'json',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:15000});
+    const response=await CapacitorHttp.get({url,headers:{Accept:'application/json','User-Agent':'CineTracker/1.4 (https://github.com/Devan920/CineTracker-)'},responseType:'json',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:15000});
     if(response.status!==200||response.url&&new URL(response.url).origin!=='https://geocoding-api.open-meteo.com')throw Error('Town search is unavailable.');
     const data=typeof response.data==='string'?JSON.parse(response.data):response.data;if(JSON.stringify(data).length>400000)throw Error('Town search response is too large.');return data;
   });
