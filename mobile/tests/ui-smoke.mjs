@@ -72,6 +72,8 @@ try{
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('You’re offline. Connect to the internet and try again.',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Close settings'}).click();
+ await page.waitForFunction(()=>!document.querySelector('dialog[open]')&&document.body.style.overflow!=='hidden');
+ await page.evaluate(()=>window.scrollTo(0,0));
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'available'})));
  await page.getByRole('complementary',{name:'App update available'}).waitFor();
  await page.getByRole('button',{name:'View update',exact:true}).click();
