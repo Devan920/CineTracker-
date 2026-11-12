@@ -114,6 +114,7 @@ try{
  assert.equal(await page.getByRole('button',{name:'Open Test Film',exact:true}).count(),0,'Active feed must not be presented as a final collection');
  await page.getByLabel('Archive release year').selectOption('2024');
  await page.getByRole('button',{name:'Open Archive Film',exact:true}).click();
+ await page.getByRole('tab',{name:'Cast & story',exact:true}).click();
  await page.getByText('Lead Actor',{exact:true}).waitFor();
  await page.getByText('A journey brings a group of old friends together.',{exact:true}).waitFor();
  assert.equal(await page.getByRole('link',{name:'CC BY-SA 4.0',exact:true}).getAttribute('href'),'https://creativecommons.org/licenses/by-sa/4.0/');
