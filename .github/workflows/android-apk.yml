@@ -1,0 +1,86 @@
+
+name: Build CineTracker APK
+on:
+  push:
+    branches: [codex/cinetracker-android-apk]
+    paths: [mobile/**, app/**, lib/**, public/**, .github/workflows/android-apk.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cinetracker-android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Test collection and app update behavior
+        run: npm test
+      - name: Type-check and bundle app screens
+        run: npm run build
+      - name: Install browser for UI verification
+        run: npx playwright install --with-deps chromium
+      - name: Verify mobile UI
+        run: npm run test:ui
+      - name: Prepare Android project
+        run: npm run android:prepare
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Compile APK
+        run: bash gradlew assembleDebug --no-daemon
+        working-directory: mobile/android
+      - name: Verify APK and package source
+        working-directory: .
+        run: |
+          node mobile/scripts/package-apk.mjs
+          zip -q -r artifacts/CineTracker-Android-Source.zip mobile app lib public .github/workflows/android-apk.yml -x 'mobile/node_modules/*' 'mobile/android/.gradle/*' 'mobile/android/build/*' 'mobile/android/app/build/*' 'mobile/android/local.properties' 'mobile/dist/*'
+      - name: Check live publisher availability
+        run: node tests/live-check.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CineTracker-Android
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    needs: android
+    if: github.repository == 'Devan920/CineTracker-' && github.ref == 'refs/heads/codex/cinetracker-android-apk'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: CineTracker-Android
+          path: artifacts
+      - name: Publish verified Android test version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node mobile/scripts/publish-release.mjs
