@@ -72,9 +72,16 @@ try{
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('You’re offline. Connect to the internet and try again.',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Close settings'}).click();
+ await page.waitForFunction(()=>!document.querySelector('dialog[open]')&&document.body.style.overflow!=='hidden');
+ await page.evaluate(()=>window.scrollTo(0,0));
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'available'})));
- await page.getByRole('complementary',{name:'App update available'}).waitFor();
- await page.getByRole('button',{name:'View update',exact:true}).click();
+ const banner=page.getByRole('complementary',{name:'App update available'});
+ await banner.waitFor();
+ const bannerGeometry=await page.evaluate(()=>{const aside=document.querySelector('.app-update-banner'),button=aside?.querySelector('button.button'),r=button?.getBoundingClientRect();return {viewport:{width:innerWidth,height:innerHeight},scroll:{x:scrollX,y:scrollY},bodyOverflow:document.body.style.overflow,aside:aside?.getBoundingClientRect().toJSON(),button:r?.toJSON(),hit:r?document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.tagName+'.'+document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.className:null}:null;});
+ console.log('Update banner geometry: '+JSON.stringify(bannerGeometry));
+ const viewUpdate=page.getByRole('button',{name:'View update',exact:true});
+ await viewUpdate.scrollIntoViewIfNeeded();
+ await viewUpdate.click({force:true});
  const download=page.getByRole('link',{name:'Download update',exact:true});
  assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.6.0-9/CineTracker-1.6.0-debug.apk');
  await download.scrollIntoViewIfNeeded();
