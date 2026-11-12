@@ -1,7 +1,6 @@
 
 'use client';
 import {useSyncExternalStore} from 'react';
-import {createPortal} from 'react-dom';
 import {ArrowUpCircle, Download, RefreshCw, X} from 'lucide-react';
 import {nativeBridge} from '../lib/platform';
 import type {UpdateState} from '../lib/app-updates';
@@ -19,13 +18,12 @@ function useUpdates() {
 export function AppUpdateBanner() {
   const {updater, state} = useUpdates();
   if (!updater || !state.latest || state.dismissedBuild === state.latest.versionCode) return null;
-  if (typeof document === 'undefined') return null;
-  return createPortal(<aside className="app-update-banner" aria-label="App update available">
+  return <aside className="app-update-banner" aria-label="App update available">
     <ArrowUpCircle size={23} aria-hidden="true"/>
     <div><strong>Update available</strong><p>CineTracker {state.latest.version} is ready.</p></div>
     <button className="button" onClick={() => window.dispatchEvent(new Event('cinepulse:preferences'))}>View update</button>
     <button className="icon-button" aria-label="Dismiss update notification" onClick={updater.dismiss}><X size={18}/></button>
-  </aside>, document.body);
+  </aside>;
 }
 export function AppUpdateSettings() {
   const {updater, state} = useUpdates();
