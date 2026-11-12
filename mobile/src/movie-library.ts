@@ -6,11 +6,35 @@ export const ARCHIVE_URL=SOURCE+'/box-office-records';
 export const ARCHIVE_PAGES=[ARCHIVE_URL,...['mollywood','kollywood','tollywood','sandalwood','bollywood'].map(region=>ARCHIVE_URL+'/'+region)];
 type Reader=(url:string)=>Promise<string>;
 type StorageLike=Pick<Storage,'getItem'|'setItem'>;
-const DAY=86400000, ARCHIVE_KEY='cinetracker-archive-v1', DETAILS_KEY='cinetracker-details-v1';
+const DAY=86400000, ARCHIVE_KEY='cinetracker-archive-v1', DETAILS_KEY='cinetracker-details-v2';
 const langs:Record<string,string>={Bollywood:'Hindi',Tollywood:'Telugu',Kollywood:'Tamil',Mollywood:'Malayalam',Sandalwood:'Kannada',Hollywood:'English',Pollywood:'Punjabi'};
 export const normalizeTitle=(s:string)=>s.normalize('NFKD').replace(/\([^)]*film[^)]*\)/gi,'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
 const plain=(html:string)=>textOf(html.replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi,'').replace(/<span[^>]*class="[^"]*mw-editsection[^"]*"[^>]*>[\s\S]*?<\/span>/gi,''));
 const safePoster=(s:string|undefined)=>{try{const u=new URL(s??'');return u.origin==='https://cdn.sacnilk.com'?u.href:null;}catch{return null;}};
+
+function youtubeEmbed(href:string):string|null{
+ try{
+  const value=href.replace(/&amp;/g,'&').replace(/&#(?:0*38|x0*26);/gi,'&');
+  const url=new URL(value.startsWith('//')?'https:'+value:value);
+  if(url.protocol!=='https:')return null;
+  let id='';
+  if(url.hostname==='youtu.be')id=url.pathname.split('/').filter(Boolean)[0]??'';
+  else if(['youtube.com','www.youtube.com','m.youtube.com','youtube-nocookie.com','www.youtube-nocookie.com'].includes(url.hostname)){
+   id=url.pathname==='/watch'?url.searchParams.get('v')??'':url.pathname.match(/^\/(?:embed|shorts)\/([\w-]{11})(?:\/|$)/)?.[1]??'';
+  }
+  return /^[\w-]{11}$/.test(id)?'https://www.youtube-nocookie.com/embed/'+id+'?rel=0':null;
+ }catch{return null;}
+}
+function findTrailer(html:string):string|null{
+ for(const match of html.matchAll(/<a\b[^>]*href=(['"])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi)){
+  const href=match[2].replace(/&amp;/g,'&'),embed=youtubeEmbed(href);
+  if(!embed)continue;
+  const before=html.slice(0,match.index??0),heading=[...before.matchAll(/<h[234]\b[^>]*>([\s\S]*?)<\/h[234]>/gi)].at(-1)?.[1]??'';
+  if(/\b(trailer|teaser)\b/i.test(plain(match[3])+' '+plain(heading)))return embed;
+ }
+ return null;
+}
+
 
 /** Exact mobile-card values only: rounded desktop totals are never substituted. */
 export function parseArchive(html:string,checkedAt:string):Movie[]{
@@ -54,13 +78,13 @@ export function parseFilm(payload:any,checkedAt:string):FilmDetails{
  const html=p.text;
  const row=(label:string)=>html.match(new RegExp('<th\\b[^>]*>\\s*'+label+'\\s*</th>\\s*<td\\b[^>]*>([\\s\\S]*?)</td>','i'))?.[1]??'';
  const names=(value:string)=>[...new Set(value.replace(/<br\s*\/?\s*>|<\/li>/gi,'\n').split('\n').map(plain).map(x=>x.trim()).filter(Boolean))].slice(0,16);
- const cast=names(row('Starring')),director=plain(row('Directed by'))||null;
- if(!director&&!cast.length)throw new Error('This result does not contain identifiable film details.');
+ const cast=names(row('Starring')),director=plain(row('Directed by'))||null,trailerUrl=findTrailer(html);
+ if(!director&&!cast.length&&!trailerUrl)throw new Error('This result does not contain identifiable film details.');
  const section=html.match(/<h2\b[^>]*id="(?:Plot|Synopsis|Premise)"[^>]*>[\s\S]*?<\/h2>([\s\S]*?)(?=<h2\b|$)/i)?.[1]??'';
  const paragraphs=[...section.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map(m=>plain(m[1])).filter(t=>t.length>30);
  const words=paragraphs.slice(0,2).join(' ').split(/\s+/).filter(Boolean);
  const story=words.length?words.slice(0,140).join(' ')+(words.length>140?'…':''):null;
- return {title:p.title.replace(/\s*\([^)]*film[^)]*\)\s*$/i,''),year:Number(p.title.match(/\((\d{4})[^)]*film/i)?.[1])||null,cast,director,story,
+ return {title:p.title.replace(/\s*\([^)]*film[^)]*\)\s*$/i,''),year:Number(p.title.match(/\((\d{4})[^)]*film/i)?.[1])||null,cast,director,story,trailerUrl,
   sourceUrl:'https://en.wikipedia.org/wiki/'+encodeURIComponent(p.title.replaceAll(' ','_')),checkedAt};
 }
 export class MovieLibrary{
@@ -115,7 +139,7 @@ export class MovieLibrary{
    const cached=this.details[key];if(!force&&cached&&Array.isArray(cached.cast)&&this.now()-Date.parse(cached.checkedAt)<7*DAY)return cached;
    try{
     let match:MovieMatch|null=null;
-    if(!pageId){const results=await this.search(title+(year?' '+year:''));match=chooseMatch(results,title,year);if(!match)return {title,year,cast:[],director:null,story:null,sourceUrl:null,checkedAt:new Date(this.now()).toISOString(),choices:results,message:results.length?'Choose the matching film below.':'Cast and story are not available for this film yet.'};}
+    if(!pageId){const results=await this.search(title+(year?' '+year:''));match=chooseMatch(results,title,year);if(!match)return {title,year,cast:[],director:null,story:null,trailerUrl:null,sourceUrl:null,checkedAt:new Date(this.now()).toISOString(),choices:results,message:results.length?'Choose the matching film below.':'Cast and story are not available for this film yet.'};}
     const params=new URLSearchParams({action:'parse',pageid:String(pageId??match!.pageId),prop:'text',format:'json',formatversion:'2',origin:'*',disableeditsection:'1'});
     const detail={...parseFilm(JSON.parse(await this.read(WIKI_API+'?'+params)),new Date(this.now()).toISOString()),year:year??match?.year??null};
     this.details[key]=detail;const entries=Object.entries(this.details).sort((a,b)=>Date.parse(b[1].checkedAt)-Date.parse(a[1].checkedAt)).slice(0,40);this.details=Object.fromEntries(entries);this.save(DETAILS_KEY,this.details);return detail;
