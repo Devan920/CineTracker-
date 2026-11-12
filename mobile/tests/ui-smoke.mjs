@@ -12,19 +12,19 @@ try{
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
  await page.addInitScript(()=>{
-  let state={status:'idle',installedVersion:'1.4.0',installedBuild:7,latest:null,checkedAt:null,dismissedBuild:null,message:null};
+  let state={status:'idle',installedVersion:'1.5.0',installedBuild:8,latest:null,checkedAt:null,dismissedBuild:null,message:null};
   let outcome='current',locationOutcome='denied'; const listeners=new Set();
   window.__locationRequests=0;
   window.addEventListener('test:location',event=>{locationOutcome=event.detail;});
-  const latest={version:'1.4.0',versionCode:7,publishedAt:'2026-10-20T18:00:00Z',
-   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.4.0-7/CineTracker-1.4.0-debug.apk',
-   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.4.0-7'};
+  const latest={version:'1.6.0',versionCode:9,publishedAt:'2026-10-20T18:00:00Z',
+   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.6.0-9/CineTracker-1.6.0-debug.apk',
+   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.6.0-9'};
   const publish=patch=>{state={...state,...patch};for(const fn of listeners)fn();};
   window.addEventListener('test:update-feed',event=>{
    outcome=event.detail;
    if(outcome==='available')publish({status:'available',latest,checkedAt:new Date().toISOString()});
   });
-  window.cinetrackerNative={version:'1.4.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
+  window.cinetrackerNative={version:'1.5.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
    getSnapshot:()=>state,subscribe:fn=>{listeners.add(fn);return()=>listeners.delete(fn);},
    dismiss:()=>publish({dismissedBuild:state.latest?.versionCode??null}),
    check:async()=>{
@@ -65,7 +65,7 @@ try{
  assert.ok(navBox && navBox.y+navBox.height<=845,'Bottom navigation must stay inside the visible phone screen');
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('heading',{name:'App updates',exact:true}).waitFor();
- await page.getByText('Installed version 1.4.0',{exact:true}).waitFor();
+ await page.getByText('Installed version 1.5.0',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('No newer version is available.',{exact:true}).waitFor();
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'error'})));
@@ -76,13 +76,13 @@ try{
  await page.getByRole('complementary',{name:'App update available'}).waitFor();
  await page.getByRole('button',{name:'View update',exact:true}).click();
  const download=page.getByRole('link',{name:'Download update',exact:true});
- assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.4.0-7/CineTracker-1.4.0-debug.apk');
+ assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.6.0-9/CineTracker-1.6.0-debug.apk');
  await download.scrollIntoViewIfNeeded();
  const clickedLink=page.waitForEvent('popup');
  await download.click();
  const popup=await clickedLink;
  await popup.waitForLoadState('domcontentloaded');
- assert.ok(popup.url().endsWith('/CineTracker-1.4.0-debug.apk'));
+ assert.ok(popup.url().endsWith('/CineTracker-1.6.0-debug.apk'));
  await popup.close();
  await page.getByRole('button',{name:'Close settings'}).click();
  await page.getByRole('button',{name:'Dismiss update notification',exact:true}).click();
