@@ -1,7 +1,7 @@
 'use client';
 import { memo,useCallback,useEffect,useRef,useState } from 'react';
 import { nativeBridge } from '../lib/platform';
-import {AppUpdateBanner,AppUpdateSettings} from './app-updates';
+import {AppUpdateSettings} from './app-updates';
 import SocialLinks,{FeedbackLinks} from './social-links';
 import {LocationSettings} from './movie-theatres';
 import { Check,Download,Moon,Settings2,Share2,Smartphone,Sun,WifiOff,X } from 'lucide-react';
@@ -35,7 +35,6 @@ export default memo(function AppExperience(){
  const install=useCallback(async()=>{if(!installEvent){setOpen(true);return;}setInstalling(true);setMessage('');try{await installEvent.prompt();const result=await installEvent.userChoice;setInstallEvent(null);setMessage(result.outcome==='accepted'?'Installation requested. Follow your browser’s confirmation.':'You can install later from your browser menu.');}catch{setInstallEvent(null);setMessage('Use the browser menu to add CineTracker to your home screen.');}finally{setInstalling(false);}},[installEvent]);
  return <>
   <div className="app-controls"><button className="app-icon-button theme-toggle" aria-label={`Switch to ${resolved==='dark'?'light':'dark'} mode`} title={`Switch to ${resolved==='dark'?'light':'dark'} mode`} onClick={()=>changeTheme(resolved==='dark'?'light':'dark')} disabled={!ready}>{resolved==='dark'?<Sun size={19}/>:<Moon size={19}/>}</button><button className="app-icon-button app-settings-button" onClick={()=>setOpen(true)} title="App settings" aria-label="App settings and installation">{standalone?<Settings2 size={19}/>:<Smartphone size={19}/>}<span>{standalone?'Settings':'Get the app'}</span></button></div>
-  <AppUpdateBanner/>
   {offline&&<div className="connection-banner" role="status"><WifiOff size={15}/><span>You’re offline. Reconnect to update collection reports.</span></div>}
   {open&&<dialog ref={dialog} className="modal preferences-modal" aria-labelledby="preferences-title" onCancel={()=>setOpen(false)} onClick={e=>{if(e.target===e.currentTarget)setOpen(false);}}><div className="modal-inner"><button className="icon-button close" onClick={()=>setOpen(false)} aria-label="Close settings"><X size={21}/></button><span className="eyebrow">APP SETTINGS</span><h2 id="preferences-title">Make it yours.</h2><p className="preferences-intro">{native?'Appearance and a way to stay in touch.':'Appearance, installation and a way to stay in touch.'}</p>
   <section className="appearance-section"><h3>Appearance</h3><p>Dark is the default. You can switch to light.</p><div className="theme-options" role="group" aria-label="Appearance">{([{value:'light',label:'Light',Icon:Sun},{value:'dark',label:'Dark',Icon:Moon}] as const).map(({value,label,Icon})=><button key={value} aria-pressed={mode===value} className={'theme-option '+(mode===value?'chosen':'')} onClick={()=>changeTheme(value)}><span className={'theme-preview preview-'+value}><span/><span/><span/></span><span className="theme-choice-label"><Icon size={15}/>{label}{mode===value&&<Check size={14}/>}</span></button>)}</div></section>
