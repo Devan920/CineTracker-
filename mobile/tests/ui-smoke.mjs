@@ -65,7 +65,7 @@ try{
  assert.ok(navBox && navBox.y+navBox.height<=845,'Bottom navigation must stay inside the visible phone screen');
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('heading',{name:'App updates',exact:true}).waitFor();
- await page.getByText('Installed version 1.3.0',{exact:true}).waitFor();
+ await page.getByText('Installed version 1.4.0',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('No newer version is available.',{exact:true}).waitFor();
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'error'})));
