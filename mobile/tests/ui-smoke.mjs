@@ -154,6 +154,7 @@ try{
  await page.getByRole('button',{name:'Open Remake',exact:true}).nth(1).waitFor();
  assert.equal(await page.getByRole('button',{name:'Open Remake',exact:true}).count(),2);
  await page.getByRole('button',{name:'Open Remake',exact:true}).nth(1).click();
+ await page.getByRole('tab',{name:'Cast & story',exact:true}).click();
  await page.getByText('Story of the 2015 remake.',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Close dialog',exact:true}).click();
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
