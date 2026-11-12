@@ -1,0 +1,31 @@
+html[data-native="true"] { overscroll-behavior-y: none; }
+html[data-native="true"] body { overscroll-behavior-y: none; background: #09090b; color: #f4f4f5; }
+html[data-native="true"] .app-settings-button span { display: none; }
+html[data-native="true"] .install-details { display: none; }
+
+.app-update-banner { position: fixed; z-index: 75; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(540px, calc(100% - 28px)); display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: 18px; background: #18181b; color: #f4f4f5; border: 1px solid #27272a; box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+.app-update-banner > svg { flex-shrink: 0; color: #f59e0b; }
+.app-update-banner > div { flex: 1; min-width: 0; }
+.app-update-banner strong { font-size: 14px; color: #f4f4f5; }
+.app-update-banner p { font-size: 12px; margin: 4px 0 0; color: #a1a1aa; }
+.app-update-banner .button { white-space: nowrap; min-height: 44px; padding: 8px 10px; font-size: 12px; }
+.app-update-banner .icon-button { flex-shrink: 0; min-width: 36px; min-height: 44px; }
+.app-update-section { padding: 24px 0; border-top: 1px solid #27272a; }
+.app-update-heading { display: flex; align-items: center; gap: 10px; }
+.app-update-heading h3 { margin: 0; font-size: 16px; color: #f4f4f5; }
+.app-update-heading p, .app-update-status, .app-update-release p { font-size: 13px; line-height: 1.6; color: #a1a1aa; }
+.app-update-heading p { margin: 4px 0 0; opacity: .85; }
+.app-update-status { margin: 14px 0; }
+.app-update-check { min-height: 44px; }
+.app-update-check:disabled { opacity: .6; }
+.app-update-checked { display: block; margin-top: 10px; font-size: 11px; opacity: .85; }
+.app-update-release { background: #272015; border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 1px solid #453017; }
+.app-update-release .button { min-height: 44px; text-decoration: none; }
+.app-update-notes { display: inline-block; padding: 12px; font-size: 13px; color: inherit; }
+.app-update-spin { animation: app-update-spin 1s linear infinite; }
+@keyframes app-update-spin { to {transform: rotate(360deg);} }
+html[data-theme="dark"] .app-update-banner { background: #18181b; color: #f4f4f5; border-color: #27272a; }
+html[data-theme="dark"] .app-update-banner > svg { color: #f59e0b; }
+html[data-theme="dark"] .app-update-section { border-color: #27272a; }
+html[data-theme="dark"] .app-update-release { background: #272015; }
+@media (prefers-reduced-motion: reduce) { .app-update-spin { animation: none; } }
