@@ -77,10 +77,10 @@ try{
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'available'})));
  const banner=page.getByRole('complementary',{name:'App update available'});
  await banner.waitFor();
+ const bannerBox=await banner.boundingBox(),viewport=page.viewportSize();
+ assert.ok(bannerBox&&viewport&&bannerBox.x>=0&&bannerBox.y>=0&&bannerBox.x+bannerBox.width<=viewport.width&&bannerBox.y+bannerBox.height<=viewport.height,'Update notice stays on-screen');
  const viewUpdate=page.getByRole('button',{name:'View update',exact:true});
- const bannerGeometry=await page.evaluate(()=>{const aside=document.querySelector('.app-update-banner'),button=aside?.querySelector('button.button'),r=button?.getBoundingClientRect();return {viewport:{width:innerWidth,height:innerHeight},scroll:{x:scrollX,y:scrollY},bodyOverflow:document.body.style.overflow,banner:aside?{x:aside.getBoundingClientRect().x,y:aside.getBoundingClientRect().y,width:aside.getBoundingClientRect().width,height:aside.getBoundingClientRect().height,bottom:aside.getBoundingClientRect().bottom}:null,button:r?{x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom}:null};});
- console.log('Update banner geometry: '+JSON.stringify(bannerGeometry));
- await viewUpdate.evaluate(button=>button.click());
+ await viewUpdate.click();
  const download=page.getByRole('link',{name:'Download update',exact:true});
  assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.6.0-9/CineTracker-1.6.0-debug.apk');
  await download.scrollIntoViewIfNeeded();
@@ -91,6 +91,7 @@ try{
  assert.ok(popup.url().endsWith('/CineTracker-1.6.0-debug.apk'));
  await popup.close();
  await page.getByRole('button',{name:'Close settings'}).click();
+ await page.waitForFunction(()=>!document.querySelector('dialog[open]')&&document.body.style.overflow!=='hidden');
  await page.getByRole('button',{name:'Dismiss update notification',exact:true}).click();
  assert.equal(await page.getByRole('complementary',{name:'App update available'}).count(),0);
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
