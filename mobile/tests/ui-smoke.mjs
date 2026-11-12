@@ -77,8 +77,6 @@ try{
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'available'})));
  const banner=page.getByRole('complementary',{name:'App update available'});
  await banner.waitFor();
- const bannerGeometry=await page.evaluate(()=>{const aside=document.querySelector('.app-update-banner'),button=aside?.querySelector('button.button'),r=button?.getBoundingClientRect();return {viewport:{width:innerWidth,height:innerHeight},scroll:{x:scrollX,y:scrollY},bodyOverflow:document.body.style.overflow,aside:aside?.getBoundingClientRect().toJSON(),button:r?.toJSON(),hit:r?document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.tagName+'.'+document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.className:null}:null;});
- console.log('Update banner geometry: '+JSON.stringify(bannerGeometry));
  const viewUpdate=page.getByRole('button',{name:'View update',exact:true});
  await viewUpdate.scrollIntoViewIfNeeded();
  await viewUpdate.click({force:true});
