@@ -5,13 +5,13 @@ import {apiFetch,nativeBridge} from '../lib/platform';
 import {approximateLocation,cinemaLinks,getArea,nearbyCinemas,setArea,subscribeArea,type AreaChoice} from '../lib/theatres';
 import directory from '../lib/cinemas-india.json';
 import type {Movie} from '../lib/boxoffice';
-import {MovieStory} from './movie-library';
+import {MovieStory,MovieTrailer} from './movie-library';
 const serverArea=()=>null;
 const useArea=()=>useSyncExternalStore(subscribeArea,getArea,serverArea);
 
 export function MovieExplore({movie}:{movie:Movie}){
- const [view,setView]=useState<'story'|'cinemas'>('story');
- return <><div className="movie-detail-tabs" role="tablist" aria-label="Movie information"><button id="story-tab" role="tab" aria-selected={view==='story'} aria-controls="movie-information-panel" onClick={()=>setView('story')}>Cast & story</button><button id="cinemas-tab" role="tab" aria-selected={view==='cinemas'} aria-controls="movie-information-panel" onClick={()=>setView('cinemas')}>Nearby cinemas</button></div><div id="movie-information-panel" role="tabpanel" aria-labelledby={view==='story'?'story-tab':'cinemas-tab'}>{view==='story'?<MovieStory movie={movie}/>:<MovieTheatres movie={movie}/>}</div></>;
+ const [view,setView]=useState<'trailer'|'story'|'cinemas'>('trailer');
+ return <><div className="movie-detail-tabs" role="tablist" aria-label="Movie information"><button id="trailer-tab" role="tab" aria-selected={view==='trailer'} aria-controls="movie-information-panel" onClick={()=>setView('trailer')}>Trailer</button><button id="story-tab" role="tab" aria-selected={view==='story'} aria-controls="movie-information-panel" onClick={()=>setView('story')}>Cast & story</button><button id="cinemas-tab" role="tab" aria-selected={view==='cinemas'} aria-controls="movie-information-panel" onClick={()=>setView('cinemas')}>Nearby cinemas</button></div><div id="movie-information-panel" role="tabpanel" aria-labelledby={view==='trailer'?'trailer-tab':view==='story'?'story-tab':'cinemas-tab'}>{view==='trailer'?<MovieTrailer key={movie.id} movie={movie}/>:view==='story'?<MovieStory movie={movie}/>:<MovieTheatres movie={movie}/>}</div></>;
 }
 
 export function MovieTheatres({movie}:{movie:Movie}){
