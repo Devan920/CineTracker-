@@ -1,6 +1,6 @@
 'use client';
 import {memo,useEffect,useMemo,useState} from 'react';
-import {ArrowUpRight,BookOpen,Film,History,RefreshCw,Search,SlidersHorizontal,Users} from 'lucide-react';
+import {ArrowUpRight,BookOpen,Film,History,Play,RefreshCw,Search,SlidersHorizontal,Users} from 'lucide-react';
 import {apiFetch} from '../lib/platform';
 import type {Movie} from '../lib/boxoffice';
 import type {ArchiveReport,FilmDetails,MovieMatch} from '../lib/movie-library';
@@ -87,3 +87,24 @@ export const MovieStory = memo(function MovieStory({movie}:{movie:Movie}){
   </>}
  </section>;
 });
+
+export function MovieTrailer({movie}:{movie:Movie}){
+ const [data,setData]=useState<FilmDetails|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[pageId,setPageId]=useState<number|undefined>(movie.wikiPageId),[retry,setRetry]=useState(0);
+ useEffect(()=>{let active=true;const abort=new AbortController();setLoading(true);setError('');setData(null);
+  const params=new URLSearchParams({title:movie.title});const year=yearOf(movie);if(year)params.set('year',String(year));if(pageId)params.set('pageid',String(pageId));if(retry)params.set('refresh','1');
+  apiFetch('/api/movies/details?'+params,{signal:abort.signal}).then(async r=>{if(!r.ok)throw Error('Movie details could not load.');return r.json();}).then((d:FilmDetails)=>{if(active)setData(d);}).catch(e=>{if(active)setError(e.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;abort.abort();};
+ },[movie.id,movie.title,pageId,retry]);
+ const searchUrl='https://www.youtube.com/results?search_query='+encodeURIComponent([movie.title,yearOf(movie),'movie trailer'].filter(Boolean).join(' '));
+ let trailerUrl:string|null=null;
+ try{const candidate=new URL(data?.trailerUrl??'');if(candidate.origin==='https://www.youtube-nocookie.com'&&/^\/embed\/[\w-]{11}$/.test(candidate.pathname))trailerUrl=candidate.href;}catch{}
+ return <section className="movie-trailer" aria-label={'Trailer for '+movie.title}>
+  <div className="trailer-heading"><span><Play size={18} fill="currentColor"/></span><div><h3>{movie.title} trailer</h3><p>Watch a linked trailer, or search YouTube if one isn’t listed.</p></div></div>
+  {loading&&<p className="library-loading" role="status">Looking for a trailer…</p>}
+  {error&&<p className="library-caption" role="status">Trailer details aren’t available right now.</p>}
+  {!!data?.choices?.length&&<div className="movie-matches" aria-label="Choose a matching film">{data.choices.map(m=><button className="button" key={m.pageId} onClick={()=>setPageId(m.pageId)}>{m.title} {m.year?'('+m.year+')':''}<ArrowUpRight size={14}/></button>)}</div>}
+  {trailerUrl?<div className="trailer-player"><iframe src={trailerUrl} title={movie.title+' trailer'} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/></div>:
+   <div className="trailer-empty"><p>{error?'You can still search for a trailer on YouTube.':'No trailer link is listed for this movie yet.'}</p><a className="button primary" href={searchUrl} target="_blank" rel="noopener noreferrer"><Play size={16}/>Search YouTube for trailer<ArrowUpRight size={15}/></a></div>}
+  {data?.sourceUrl&&trailerUrl&&<p className="metadata-credit">Trailer link listed on <a href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Wikipedia</a>.</p>}
+  <button className="text-button trailer-retry" onClick={()=>setRetry(r=>r+1)}><RefreshCw size={14}/>Refresh trailer</button>
+ </section>;
+}
