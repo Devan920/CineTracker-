@@ -12,19 +12,19 @@ try{
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
  await page.addInitScript(()=>{
-  let state={status:'idle',installedVersion:'1.5.0',installedBuild:8,latest:null,checkedAt:null,dismissedBuild:null,message:null};
+  let state={status:'idle',installedVersion:'1.6.0',installedBuild:9,latest:null,checkedAt:null,dismissedBuild:null,message:null};
   let outcome='current',locationOutcome='denied'; const listeners=new Set();
   window.__locationRequests=0;
   window.addEventListener('test:location',event=>{locationOutcome=event.detail;});
-  const latest={version:'1.6.0',versionCode:9,publishedAt:'2026-10-20T18:00:00Z',
-   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.6.0-9/CineTracker-1.6.0-debug.apk',
-   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.6.0-9'};
+  const latest={version:'1.7.0',versionCode:10,publishedAt:'2026-10-20T18:00:00Z',
+   downloadUrl:'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.7.0-10/CineTracker-1.7.0-debug.apk',
+   releaseUrl:'https://github.com/Devan920/CineTracker-/releases/tag/android-test-v1.7.0-10'};
   const publish=patch=>{state={...state,...patch};for(const fn of listeners)fn();};
   window.addEventListener('test:update-feed',event=>{
    outcome=event.detail;
    if(outcome==='available')publish({status:'available',latest,checkedAt:new Date().toISOString()});
   });
-  window.cinetrackerNative={version:'1.5.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
+  window.cinetrackerNative={version:'1.6.0',request:(path,init)=>fetch(path,init),shareCsv:async()=>{},location:{current:async()=>{window.__locationRequests++;if(locationOutcome==='denied')throw Error('Location permission was not granted. Choose a town, or allow location in Android app settings.');return {id:'device',label:'Your approximate location',kind:'device',latitude:8.7,longitude:76.81,accuracyKm:1};}},updates:{
    getSnapshot:()=>state,subscribe:fn=>{listeners.add(fn);return()=>listeners.delete(fn);},
    dismiss:()=>publish({dismissedBuild:state.latest?.versionCode??null}),
    check:async()=>{
@@ -65,7 +65,7 @@ try{
  assert.ok(navBox && navBox.y+navBox.height<=845,'Bottom navigation must stay inside the visible phone screen');
  await nav.getByRole('button',{name:'Settings',exact:true}).click();
  await page.getByRole('heading',{name:'App updates',exact:true}).waitFor();
- await page.getByText('Installed version 1.5.0',{exact:true}).waitFor();
+ await page.getByText('Installed version 1.6.0',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Check for updates',exact:true}).click();
  await page.getByText('No newer version is available.',{exact:true}).waitFor();
  await page.evaluate(()=>window.dispatchEvent(new CustomEvent('test:update-feed',{detail:'error'})));
@@ -82,13 +82,13 @@ try{
  const viewUpdate=page.getByRole('button',{name:'View update',exact:true});
  await viewUpdate.click();
  const download=page.getByRole('link',{name:'Download update',exact:true});
- assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.6.0-9/CineTracker-1.6.0-debug.apk');
+ assert.equal(await download.getAttribute('href'),'https://github.com/Devan920/CineTracker-/releases/download/android-test-v1.7.0-10/CineTracker-1.7.0-debug.apk');
  await download.scrollIntoViewIfNeeded();
  const clickedLink=page.waitForEvent('popup');
  await download.click();
  const popup=await clickedLink;
  await popup.waitForLoadState('domcontentloaded');
- assert.ok(popup.url().endsWith('/CineTracker-1.6.0-debug.apk'));
+ assert.ok(popup.url().endsWith('/CineTracker-1.7.0-debug.apk'));
  await popup.close();
  await page.getByRole('button',{name:'Close settings'}).click();
  await page.waitForFunction(()=>!document.querySelector('dialog[open]')&&document.body.style.overflow!=='hidden');
@@ -107,9 +107,11 @@ try{
  await page.getByRole('button',{name:'Save Test Film',exact:true}).waitFor();
  assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
  await page.getByRole('button',{name:'Save Test Film',exact:true}).click();
- await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
+ await nav.getByRole('button',{name:'Library',exact:true}).click();
+  await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Watchlist',exact:true}).click();
  assert.equal(await page.getByRole('button',{name:'Remove Test Film',exact:true}).count(),1);
- await nav.getByRole('button',{name:'Archive',exact:true}).click();
+ await nav.getByRole('button',{name:'Library',exact:true}).click();
+  await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Movie library',exact:true}).click();
  await page.getByRole('button',{name:'Open Archive Film',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'Open Test Film',exact:true}).count(),0,'Active feed must not be presented as a final collection');
  await page.getByLabel('Archive release year').selectOption('2024');
@@ -144,10 +146,12 @@ try{
  await page.screenshot({path:'../artifacts/ui-movie-dark.png',animations:'disabled'});
  await page.getByRole('button',{name:'Save movie',exact:true}).click();
  await page.getByRole('button',{name:'Close dialog',exact:true}).click();
- await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
+ await nav.getByRole('button',{name:'Library',exact:true}).click();
+  await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Watchlist',exact:true}).click();
  await page.getByRole('button',{name:'Remove Archive Film',exact:true}).waitFor();
  await page.reload();
- await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
+ await nav.getByRole('button',{name:'Library',exact:true}).click();
+  await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Watchlist',exact:true}).click();
  await page.getByRole('button',{name:'Remove Archive Film',exact:true}).waitFor();
  await nav.getByRole('button',{name:'Search',exact:true}).click();
  await page.getByLabel('Search movies',{exact:true}).fill('Remake');
@@ -161,7 +165,7 @@ try{
  await page.getByText('No area selected. You can also choose a town without location permission.',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Light',exact:true}).click();
  await page.getByRole('button',{name:'Close settings'}).click();
- await nav.getByRole('button',{name:'Overview',exact:true}).click();
+ await nav.getByRole('button',{name:'Home',exact:true}).click();
  await page.screenshot({path:'../artifacts/ui-home-light.png',animations:'disabled'});
  await page.setViewportSize({width:320,height:700});
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow on small phones');

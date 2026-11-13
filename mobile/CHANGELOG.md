@@ -1,3 +1,11 @@
+# CineTracker 1.6.0
+
+- Refreshed the Android screens with a near-black, violet-accented cinematic look.
+- Added compact mobile collection cards showing India net, India gross, and worldwide gross together.
+- Grouped Watchlist and Movie library under Library navigation.
+- Kept movie details on the Trailer tab and removed the duplicate trailer player.
+- Preserved the automatic update checker and existing collection refresh behavior.
+
 # CineTracker 1.5.0
 
 - Dark appearance is now the default. Light appearance remains available in settings.

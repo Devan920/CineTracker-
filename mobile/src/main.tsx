@@ -21,6 +21,7 @@ import '../../app/mobile.css';
 import '../../app/redesign.css';
 import './native.css';
 import '../../app/cinema.css';
+import '../../app/cinematic.css';
 
 let preference: string = 'dark';
 try { preference = localStorage.getItem(THEME_KEY) ?? 'dark'; } catch {}
