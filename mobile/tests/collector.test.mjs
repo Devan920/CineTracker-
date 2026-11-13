@@ -1,40 +1,35 @@
-
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Collector} from '../src/collector.ts';
-import {REFRESH_MS,SOURCE,CATALOG_URL} from '../../lib/boxoffice.ts';
-const detail=SOURCE+'/quicknews/Test_2026_Box_Office_Collection_Day_2';
-const live='<section data-lvp-film><h2><a href="/movie/Test_2026">Test Film</a></h2><div>Hindi · Day 2 today</div></section>';
-const catalog='<div class="movie-card"><a href="/movie/Test_2026"><h3>Test Film (Bollywood)</h3></a>Net: ₹12Cr Gross: ₹14Cr WW: ₹17Cr Days: 2</div>';
-const daily='<head><meta name="keywords" content="Bollywood movies"></head><h1>Test Film Box Office Collection Day 2</h1><script type="application/ld+json">{"@type":"WebPage","datePublished":"2026-10-20T10:00:00Z","dateModified":"2026-10-20T10:00:00Z"}</script><p class="article-summary">total India net to ₹12 Cr. total India gross collections to ₹14 Cr. worldwide gross collection to ₹17 Cr. total overseas gross to ₹3 Cr.</p><script>const labels=["Day 1","Day 2"];const netData=[10,2];</script>';
+import {REFRESH_MS,INDIAN_BOX_OFFICE_RSS_URL} from '../../lib/boxoffice.ts';
+
+const feed='<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Indian Box Office</title><link>https://indian-boxoffice.com/</link><description>Consensus estimates</description><item><title>Test Film box office — ₹17.0 Cr WW / ₹12.0 Cr India nett</title><link>https://indian-boxoffice.com/movies/test-film-2026/</link><guid>https://indian-boxoffice.com/movies/test-film-2026/</guid><pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate><description>Test Film (Hindi) — verdict Hit. India nett ₹12.0 Cr, worldwide ₹17.0 Cr.</description></item></channel></rss>';
 const storage=()=>{const map=new Map();return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)};};
 function fixture(){
- let clock=Date.parse('2026-10-20T12:00:00Z'),fail=false,deny=false,requests=0,extra=false;
+ let clock=Date.parse('2026-10-20T12:00:00Z'),fail=false,requests=0,response=feed;
  const store=storage();
- const fetcher=async url=>{
-  requests++;if(fail)throw new Error('HTTP 503');
-  if(url.endsWith('/robots.txt'))return deny?'User-agent: *\nDisallow: /':'User-agent: *\nAllow: /\nCrawl-delay: 1';
-  if(url===SOURCE+'/live')return live;
-  if(url===SOURCE+'/')return '<a href="'+detail+'">daily</a>';
-  if(url===CATALOG_URL)return catalog+(extra?'<div class="movie-card"><a href="/movie/New_Film_2026"><h3>New Film (Mollywood)</h3></a>Net: ₹1Cr Gross: ₹1.2Cr WW: ₹2Cr Days: 1</div>':'');
-  return daily;
- };
+ const fetcher=async url=>{requests++;assert.equal(url,INDIAN_BOX_OFFICE_RSS_URL);if(fail)throw new Error('HTTP 503');return response;};
  const instance=()=>new Collector(store,fetcher,()=>clock);
- const finish=async app=>{for(let i=0;i<20;i++){clock+=2000;const r=await app.step();if(r.state==='complete'||r.state==='current')return r;}throw new Error('Refresh did not complete');};
- return {instance,finish,advance:n=>clock+=n,fail:()=>fail=true,deny:()=>deny=true,extra:()=>extra=true,count:()=>requests};
+ const finish=async app=>{const result=await app.step();assert.equal(result.state,'complete');};
+ return {instance,finish,store,advance:n=>clock+=n,fail:()=>fail=true,setResponse:value=>response=value,count:()=>requests};
 }
-test('first install has no sample figures; refresh resumes, validates, and waits 20 minutes',async()=>{
- const f=fixture();let app=f.instance();
+
+test('first install has no sample figures and refreshes the fixed RSS feed every 20 minutes',async()=>{
+ const f=fixture(),app=f.instance();
  assert.equal(app.getReport().movies.length,0);
- await app.step();app=f.instance();assert.equal(app.getReport().refreshing,true);
  await f.finish(app);
- assert.equal(app.getReport().movies[0].indiaNet,12);
- assert.equal(app.getReport().movies[0].worldwide,17);
- assert.equal(app.getReport().movies[0].industry,'Bollywood');
+ const report=app.getReport(),movie=report.movies[0];
+ assert.equal(report.sourceStatus,'partial');
+ assert.equal(movie.indiaNet,12);
+ assert.equal(movie.indiaGross,null);
+ assert.equal(movie.worldwide,17);
+ assert.deepEqual(movie.languages,['Hindi']);
+ assert.equal(movie.status,'estimate');
  const count=f.count();assert.equal((await app.step()).state,'current');assert.equal(f.count(),count);
- f.advance(REFRESH_MS);f.extra();await f.finish(app);
- assert.ok(app.getReport().movies.some(m=>m.title==='New Film'));
+ f.advance(REFRESH_MS);await f.finish(app);assert.equal(f.count(),count+1);
+ const restored=f.instance();assert.equal(restored.getReport().movies[0].worldwide,17);
 });
+
 test('a source outage preserves the last successful timestamp and values',async()=>{
  const f=fixture(),app=f.instance();await f.finish(app);
  const previous=app.getReport();f.advance(REFRESH_MS);f.fail();await f.finish(app);
@@ -42,11 +37,26 @@ test('a source outage preserves the last successful timestamp and values',async(
  assert.equal(app.getReport().checkedAt,previous.checkedAt);
  assert.equal(app.getReport().movies[0].indiaNet,previous.movies[0].indiaNet);
 });
-test('robots restrictions are honored without collecting blocked pages',async()=>{
- const f=fixture();f.deny();const app=f.instance();await f.finish(app);
- assert.equal(f.count(),1);assert.equal(app.getReport().movies.length,0);assert.equal(app.getReport().sourceStatus,'error');
+
+test('feed items from another origin are ignored',async()=>{
+ const f=fixture(),app=f.instance();
+ f.setResponse(feed.replaceAll('https://indian-boxoffice.com/movies/test-film-2026/','https://example.invalid/movies/test-film-2026/'));
+ await f.finish(app);
+ assert.equal(app.getReport().sourceStatus,'error');
+ assert.deepEqual(app.getReport().movies,[]);
+ assert.equal(app.getReport().checkedAt,null);
 });
-test('offline first launch does not manufacture a successful check',async()=>{
+
+test('legacy Sacnilk snapshots are removed during migration',()=>{
+ const f=fixture();
+ f.store.setItem('cinetracker-native-collections-v1',JSON.stringify({version:1,report:{movies:[{sourceUrl:'https://www.sacnilk.com/live'}]}}));
+ const app=f.instance();
+ assert.equal(f.store.getItem('cinetracker-native-collections-v1'),null);
+ assert.equal(app.getReport().movies.length,0);
+});
+
+test('offline first install does not manufacture a successful check',async()=>{
  const f=fixture();f.fail();const app=f.instance();await f.finish(app);
- assert.equal(app.getReport().checkedAt,null);assert.deepEqual(app.getReport().movies,[]);
+ assert.equal(app.getReport().checkedAt,null);
+ assert.deepEqual(app.getReport().movies,[]);
 });
