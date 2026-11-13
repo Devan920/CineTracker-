@@ -7,10 +7,11 @@ import {Directory, Encoding, Filesystem} from '@capacitor/filesystem';
 import {Share} from '@capacitor/share';
 import {Geolocation} from '@capacitor/geolocation';
 import Home from '../../app/page';
-import {SOURCE} from '../../lib/boxoffice';
+import {SOURCE,INDIAN_BOX_OFFICE_ORIGIN,INDIAN_BOX_OFFICE_RSS_URL} from '../../lib/boxoffice';
 import {resolveTheme, validTheme, THEME_KEY} from '../../lib/appearance';
 import {Collector} from './collector';
 import {MovieLibrary} from './movie-library';
+import {YouTubeTrailerSearch} from './youtube';
 import {responseText} from './http-text';
 import {requestApproximateLocation} from './location';
 import {TownSearch} from './towns';
@@ -32,12 +33,13 @@ if (Capacitor.isNativePlatform()) {
   let sourceQueue:Promise<unknown>=Promise.resolve(),lastSourceAt=0;
   const readPage=async(url:string):Promise<string>=>{
     const parsed=new URL(url);
-    if(![SOURCE,'https://en.wikipedia.org'].includes(parsed.origin))throw new Error('Unsupported movie information address.');
+    if(![SOURCE,INDIAN_BOX_OFFICE_ORIGIN,'https://en.wikipedia.org'].includes(parsed.origin))throw new Error('Unsupported movie information address.');
+    if(parsed.origin===INDIAN_BOX_OFFICE_ORIGIN&&url!==INDIAN_BOX_OFFICE_RSS_URL)throw new Error('Unsupported box-office feed address.');
     if(parsed.origin==='https://en.wikipedia.org'&&parsed.pathname!=='/w/api.php')throw new Error('Unsupported movie information address.');
     const request=async()=>{
       if(parsed.origin===SOURCE){const wait=1000-(Date.now()-lastSourceAt);if(wait>0)await new Promise(r=>setTimeout(r,wait));lastSourceAt=Date.now();}
       const result=await CapacitorHttp.request({url,method:'GET',
-        headers:{Accept:parsed.origin===SOURCE?'text/html,text/plain':'application/json',
+        headers:{Accept:parsed.origin===INDIAN_BOX_OFFICE_ORIGIN?'application/rss+xml, application/xml, text/xml':parsed.origin===SOURCE?'text/html,text/plain':'application/json',
           'User-Agent':'CinePulse/1.0 (CineTracker/1.5; https://github.com/Devan920/CineTracker-)'},
         responseType:'text',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:18000});
       return responseText(result,parsed.origin);
@@ -47,6 +49,18 @@ if (Capacitor.isNativePlatform()) {
   };
   const collector=new Collector(localStorage,readPage);
   const library=new MovieLibrary(readPage,localStorage);
+  const youtubeTrailers=new YouTubeTrailerSearch(localStorage,import.meta.env.VITE_YOUTUBE_API_KEY??'',async(url,key)=>{
+    const androidCert=import.meta.env.VITE_ANDROID_CERT_SHA1?.trim();
+    const headers:Record<string,string>={Accept:'application/json','X-Goog-Api-Key':key,'X-Android-Package':'com.devanarayanan.cinetracker'};
+    if(androidCert)headers['X-Android-Cert']=androidCert;
+    const response=await CapacitorHttp.request({url,method:'GET',headers,
+      responseType:'json',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:15000});
+    if(response.status!==200||response.url&&new URL(response.url).origin!=='https://www.googleapis.com')throw Error('YouTube search is unavailable.');
+    const data=typeof response.data==='string'?JSON.parse(response.data):response.data;
+    if(JSON.stringify(data).length>400000)throw Error('YouTube search response is too large.');
+    return data;
+  });
+  setInterval(()=>youtubeTrailers.pruneExpired(),24*60*60*1000);
   const towns=new TownSearch(async url=>{
     const response=await CapacitorHttp.get({url,headers:{Accept:'application/json','User-Agent':'CineTracker/1.5 (https://github.com/Devan920/CineTracker-)'},responseType:'json',shouldEncodeUrlParams:false,disableRedirects:true,connectTimeout:10000,readTimeout:15000});
     if(response.status!==200||response.url&&new URL(response.url).origin!=='https://geocoding-api.open-meteo.com')throw Error('Town search is unavailable.');
@@ -84,6 +98,12 @@ if (Capacitor.isNativePlatform()) {
         if(address.pathname==='/api/locations/search')data={towns:await towns.search(address.searchParams.get('q')??'')};
         else if(address.pathname==='/api/archive')data=await library.getArchive(address.searchParams.get('refresh')==='1');
         else if(address.pathname==='/api/movies/search')data={movies:await library.search(address.searchParams.get('q')??'')};
+        else if(address.pathname==='/api/movies/trailer-search'){
+          const title=(address.searchParams.get('title')??'').slice(0,180);
+          const year=Number(address.searchParams.get('year'))||null;
+          if(!title||year&&(year<1880||year>2100))return Response.json({error:'Invalid trailer search.'},{status:400});
+          data=await youtubeTrailers.find(title,year);
+        }
         else if(address.pathname==='/api/movies/details'){
           const title=(address.searchParams.get('title')??'').slice(0,180);
           const year=Number(address.searchParams.get('year'))||null,id=Number(address.searchParams.get('pageid'))||undefined;
@@ -107,6 +127,7 @@ if (Capacitor.isNativePlatform()) {
   };
   App.addListener('appStateChange', ({isActive}) => {
     if (isActive) {
+      youtubeTrailers.pruneExpired();
       document.dispatchEvent(new Event('visibilitychange'));
       void updater.check();
     }

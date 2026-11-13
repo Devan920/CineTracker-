@@ -6,13 +6,13 @@ A private, responsive box-office web app built with React, Vinext, Cloudflare Wo
 
 ## Product behavior
 
-- Discovers active daily reports and recent Indian releases from public Sacnilk pages.
+- Reads current India net and worldwide consensus totals from Indian Box Office's public RSS feed. Coverage is limited to the titles with both totals in the feed; absent titles stay absent.
 - Separates India net, India gross, overseas gross and worldwide gross. Unknown amounts stay null.
 - Stores collection snapshots with original source URLs, publisher timestamps and fetch timestamps.
 - Refreshes every 20 minutes while open; resumes unfinished source checks after reopening.
 - Search, language filters, India/worldwide sorting, per-film daily charts, browser-local watchlists and CSV export.
 - Installable mobile web app with app icons, standalone display, safe-area spacing, bottom navigation and phone-sized collection cards.
-- Light, Dark and System appearance, persisted locally and applied before first paint. A quick theme toggle is in the header; all options are in Settings.
+- Near-black dark appearance with teal accents. The dark theme is applied before first paint.
 - The main-page marquee ranks worldwide gross among tracked South Indian (Tamil/Telugu/Malayalam/Kannada) and North Indian (Hindi/Punjabi) film industries. It uses explicit industry metadata, not dubbed-language order, excludes unknown/conflicting/failed reports, and preserves ties. These are not geographic North/South theatre revenues. It refreshes with report data, has no visible pause button, pauses on hover or keyboard focus, and respects reduced-motion preferences.
 - The refreshed interface uses clearer mobile cards, larger controls, loading placeholders and a separate countdown component to avoid redrawing the dashboard every second. Search updates are deferred and movie rows are memoized.
 - Settings includes Instagram, Facebook and Telegram links supplied by Devanarayanan.
@@ -22,9 +22,9 @@ A private, responsive box-office web app built with React, Vinext, Cloudflare Wo
 
 ## Architecture
 
-`lib/boxoffice.ts` contains pure parsers and validation. `lib/collector.ts` runs a resumable collection job. The Worker handles `GET /api/report` and `POST /api/refresh` before the Vinext renderer. Each POST does one bounded source request, honoring robots directives and crawl delays. A D1 lease prevents concurrent source checks. Discovery refreshes with every run; films are not hard-coded into the collector. `lib/seed.json` is an attributed initial snapshot captured during setup, never labelled as a live fetch.
+`lib/boxoffice.ts` parses the Indian Box Office publisher's RSS feed for movie totals. `lib/collector.ts` refreshes only that fixed feed URL through the Worker at the app's normal interval; a D1 lease prevents concurrent requests. The feed is an attributed consensus estimate, not an audited register, and its selected-title coverage is shown as such. The current report contains only films with both India net and worldwide totals in the feed; other titles are left out. India gross is not supplied by this feed and is left blank rather than estimated. The historical archive is a separate feature that still reads its previously configured Sacnilk source.
 
-Access is owner-private at the Sites dispatch layer. The shared updater relies on that boundary. Do not change the Site to public without adding application-level authorization for refresh endpoints and reviewing privacy requirements. Same-origin checks protect browser writes. Source fetching accepts only the fixed publisher origin and known public paths; it does not accept user-supplied fetch targets or execute publisher JavaScript.
+Access is owner-private at the Sites dispatch layer. The shared updater relies on that boundary. Do not change the Site to public without adding application-level authorization for refresh endpoints and reviewing privacy requirements. Same-origin checks protect browser writes. The live collection updater accepts only the fixed RSS URL; the separate archive uses its own fixed source paths. Neither feature accepts user-supplied fetch targets or executes publisher JavaScript.
 
 ## Unattended scheduling
 

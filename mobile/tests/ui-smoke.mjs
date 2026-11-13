@@ -107,10 +107,10 @@ try{
  await page.getByRole('button',{name:'Save Test Film',exact:true}).waitFor();
  assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
  await page.getByRole('button',{name:'Save Test Film',exact:true}).click();
- await nav.getByRole('button',{name:'Library',exact:true}).click();
+ await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
   await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Watchlist',exact:true}).click();
  assert.equal(await page.getByRole('button',{name:'Remove Test Film',exact:true}).count(),1);
- await nav.getByRole('button',{name:'Library',exact:true}).click();
+ await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
   await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Movie library',exact:true}).click();
  await page.getByRole('button',{name:'Open Archive Film',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'Open Test Film',exact:true}).count(),0,'Active feed must not be presented as a final collection');
@@ -146,11 +146,11 @@ try{
  await page.screenshot({path:'../artifacts/ui-movie-dark.png',animations:'disabled'});
  await page.getByRole('button',{name:'Save movie',exact:true}).click();
  await page.getByRole('button',{name:'Close dialog',exact:true}).click();
- await nav.getByRole('button',{name:'Library',exact:true}).click();
+ await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
   await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Watchlist',exact:true}).click();
  await page.getByRole('button',{name:'Remove Archive Film',exact:true}).waitFor();
  await page.reload();
- await nav.getByRole('button',{name:'Library',exact:true}).click();
+ await nav.getByRole('button',{name:'Watchlist',exact:true}).click();
   await page.getByRole('group',{name:'Library view'}).getByRole('button',{name:'Watchlist',exact:true}).click();
  await page.getByRole('button',{name:'Remove Archive Film',exact:true}).waitFor();
  await nav.getByRole('button',{name:'Search',exact:true}).click();

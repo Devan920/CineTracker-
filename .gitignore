@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+mobile/.env.local
+mobile/.env.*.local

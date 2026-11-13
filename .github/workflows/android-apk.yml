@@ -39,6 +39,9 @@ jobs:
       - name: Test collection and app update behavior
         run: npm test
       - name: Type-check and bundle app screens
+        env:
+          VITE_YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          VITE_ANDROID_CERT_SHA1: ${{ secrets.YOUTUBE_ANDROID_CERT_SHA1 }}
         run: npm run build
       - name: Install browser for UI verification
         run: npx playwright install --with-deps chromium

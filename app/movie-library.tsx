@@ -2,6 +2,7 @@
 import {memo,useEffect,useMemo,useState} from 'react';
 import {ArrowUpRight,BookOpen,Film,History,Play,RefreshCw,Search,SlidersHorizontal,Users} from 'lucide-react';
 import {apiFetch} from '../lib/platform';
+import {YOUTUBE_CONSENT_KEY} from '../lib/youtube-policy';
 import type {Movie} from '../lib/boxoffice';
 import type {ArchiveReport,FilmDetails,MovieMatch} from '../lib/movie-library';
 
@@ -12,7 +13,7 @@ const yearOf=(m:Movie)=>m.year??(Number(m.releaseDate?.slice(0,4))||null);
 const ResultCard = memo(function ResultCard({movie,onSelect}:{movie:Movie;onSelect:(m:Movie)=>void}){
  return <button className="library-film" onClick={()=>onSelect(movie)} aria-label={'Open '+movie.title}>
   <span className="library-poster">{movie.poster?<img src={movie.poster} alt={`${movie.title} poster`} loading="lazy" decoding="async" onError={e=>{e.currentTarget.style.display='none';}}/>:<Film size={25}/>}</span>
-  <span className="library-film-copy"><small>{yearOf(movie)??'Movie'}{movie.languages.length?' · '+movie.languages.join(', '):''}</small><strong>{movie.title}</strong><span>{movie.archive?'Lifetime worldwide':movie.wikiPageId?'Cast & story':'Worldwide gross'}</span><b>{movie.wikiPageId?'Explore movie':cash(movie.worldwide)}</b></span>
+  <span className="library-film-copy"><small>{yearOf(movie)??'Movie'}{movie.languages.length?' · '+movie.languages.join(', '):''}</small><strong>{movie.title}</strong><span>{movie.archive?'Lifetime worldwide':movie.wikiPageId?'Cast & story':'Worldwide collection'}</span><b>{movie.wikiPageId?'Explore movie':cash(movie.worldwide)}</b></span>
   <ArrowUpRight size={18}/>
  </button>;
 });
@@ -89,22 +90,41 @@ export const MovieStory = memo(function MovieStory({movie}:{movie:Movie}){
 });
 
 export function MovieTrailer({movie}:{movie:Movie}){
- const [data,setData]=useState<FilmDetails|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[pageId,setPageId]=useState<number|undefined>(movie.wikiPageId),[retry,setRetry]=useState(0);
- useEffect(()=>{let active=true;const abort=new AbortController();setLoading(true);setError('');setData(null);
-  const params=new URLSearchParams({title:movie.title});const year=yearOf(movie);if(year)params.set('year',String(year));if(pageId)params.set('pageid',String(pageId));if(retry)params.set('refresh','1');
-  apiFetch('/api/movies/details?'+params,{signal:abort.signal}).then(async r=>{if(!r.ok)throw Error('Movie details could not load.');return r.json();}).then((d:FilmDetails)=>{if(active)setData(d);}).catch(e=>{if(active)setError(e.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;abort.abort();};
- },[movie.id,movie.title,pageId,retry]);
+ const [data,setData]=useState<FilmDetails|null>(null),[youtube,setYoutube]=useState<{trailerUrl:string|null;sourceUrl:string|null;configured:boolean;channelTitle?:string}|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[pageId,setPageId]=useState<number|undefined>(movie.wikiPageId),[retry,setRetry]=useState(0),[consent,setConsent]=useState<'checking'|'required'|'accepted'|'declined'>('checking');
+ useEffect(()=>{let accepted=false;try{accepted=localStorage.getItem(YOUTUBE_CONSENT_KEY)==='accepted';}catch{}setConsent(accepted?'accepted':'required');},[]);
+ useEffect(()=>{let active=true;const abort=new AbortController();setLoading(true);setError('');setData(null);setYoutube(null);
+  if(consent!=='accepted'){setLoading(false);return()=>{active=false;abort.abort();};}
+  const title=movie.title,year=yearOf(movie),searchParams=new URLSearchParams({title});if(year)searchParams.set('year',String(year));
+  (async()=>{
+   try{
+    const response=await apiFetch('/api/movies/trailer-search?'+searchParams,{signal:abort.signal});
+    if(response.ok){const match=await response.json();if(active)setYoutube(match);if(match.trailerUrl){if(active)setLoading(false);return;}}
+   }catch{}
+   if(abort.signal.aborted)return;
+   const detailParams=new URLSearchParams({title});if(year)detailParams.set('year',String(year));if(pageId)detailParams.set('pageid',String(pageId));if(retry)detailParams.set('refresh','1');
+   try{const response=await apiFetch('/api/movies/details?'+detailParams,{signal:abort.signal});if(!response.ok)throw Error('Movie details could not load.');const details=await response.json() as FilmDetails;if(active)setData(details);}
+   catch(e){if(active)setError(e instanceof Error?e.message:'Movie details could not load.');}
+   finally{if(active)setLoading(false);}
+  })();return()=>{active=false;abort.abort();};
+ },[movie.id,movie.title,pageId,retry,consent]);
+ const allowYoutube=()=>{try{localStorage.setItem(YOUTUBE_CONSENT_KEY,'accepted');}catch{}setConsent('accepted');};
  const searchUrl='https://www.youtube.com/results?search_query='+encodeURIComponent([movie.title,yearOf(movie),'movie trailer'].filter(Boolean).join(' '));
  let trailerUrl:string|null=null;
- try{const candidate=new URL(data?.trailerUrl??'');if(candidate.origin==='https://www.youtube-nocookie.com'&&/^\/embed\/[\w-]{11}$/.test(candidate.pathname))trailerUrl=candidate.href;}catch{}
+ try{const candidate=new URL(youtube?.trailerUrl??data?.trailerUrl??'');if(candidate.origin==='https://www.youtube-nocookie.com'&&/^\/embed\/[\w-]{11}$/.test(candidate.pathname))trailerUrl=candidate.href;}catch{}
+ let youtubeSourceUrl:string|null=null;
+ try{const source=new URL(youtube?.sourceUrl??'');if(source.origin==='https://www.youtube.com'&&source.pathname==='/watch'&&/^[\w-]{11}$/.test(source.searchParams.get('v')??''))youtubeSourceUrl=source.href;}catch{}
+ let playbackUrl:string|null=null;
+ if(trailerUrl){const player=new URL(trailerUrl);player.searchParams.set('autoplay','1');player.searchParams.set('mute','1');player.searchParams.set('playsinline','1');player.searchParams.set('rel','0');playbackUrl=player.href;}
  return <section className="movie-trailer" aria-label={'Trailer for '+movie.title}>
-  <div className="trailer-heading"><span><Play size={18} fill="currentColor"/></span><div><h3>{movie.title} trailer</h3><p>Watch a linked trailer, or search YouTube if one isn’t listed.</p></div></div>
-  {loading&&<p className="library-loading" role="status">Looking for a trailer…</p>}
-  {error&&<p className="library-caption" role="status">Trailer details aren’t available right now.</p>}
-  {!!data?.choices?.length&&<div className="movie-matches" aria-label="Choose a matching film">{data.choices.map(m=><button className="button" key={m.pageId} onClick={()=>setPageId(m.pageId)}>{m.title} {m.year?'('+m.year+')':''}<ArrowUpRight size={14}/></button>)}</div>}
-  {trailerUrl?<div className="trailer-player"><iframe src={trailerUrl} title={movie.title+' trailer'} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/></div>:
-   <div className="trailer-empty"><p>{error?'You can still search for a trailer on YouTube.':'No trailer link is listed for this movie yet.'}</p><a className="button primary" href={searchUrl} target="_blank" rel="noopener noreferrer"><Play size={16}/>Search YouTube for trailer<ArrowUpRight size={15}/></a></div>}
-  {data?.sourceUrl&&trailerUrl&&<p className="metadata-credit">Trailer link listed on <a href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Wikipedia</a>.</p>}
-  <button className="text-button trailer-retry" onClick={()=>setRetry(r=>r+1)}><RefreshCw size={14}/>Refresh trailer</button>
+  <div className="trailer-heading"><span><Play size={18} fill="currentColor"/></span><div><h3>{movie.title} trailer</h3><p>Starts automatically when a trailer is available. Playback is muted.</p></div></div>
+  {consent==='checking'||consent==='required'?<div className="trailer-consent"><p>To find and play this trailer, CineTracker sends the movie title and year to YouTube. Search results are stored on this device for up to 30 days and refreshed when you return after 24 hours. Review the <a href="/privacy.html">privacy policy</a> and <a href="/terms.html">terms of use</a>.</p><div><button className="button primary" disabled={consent==='checking'} onClick={allowYoutube}>Agree & continue</button><button className="button" disabled={consent==='checking'} onClick={()=>setConsent('declined')}>Not now</button></div></div>:consent==='declined'?<div className="trailer-empty"><p>YouTube search is off. Enable it to find an automatic trailer.</p><button className="button primary" onClick={()=>setConsent('required')}>Review and enable YouTube</button></div>:<>
+   {loading&&<p className="library-loading" role="status">Searching YouTube for a trailer…</p>}
+   {error&&<p className="library-caption" role="status">Trailer details aren’t available right now.</p>}
+   {!!data?.choices?.length&&<div className="movie-matches" aria-label="Choose a matching film">{data.choices.map(m=><button className="button" key={m.pageId} onClick={()=>setPageId(m.pageId)}>{m.title} {m.year?'('+m.year+')':''}<ArrowUpRight size={14}/></button>)}</div>}
+   {playbackUrl?<div className="trailer-player"><iframe src={playbackUrl} title={movie.title+' trailer'} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/></div>:
+    <div className="trailer-empty"><p>{error?'You can still search for a trailer on YouTube.':'No trailer link is listed for this movie yet.'}</p><a className="button primary" href={searchUrl} target="_blank" rel="noopener noreferrer"><Play size={16}/>Search YouTube for trailer<ArrowUpRight size={15}/></a></div>}
+   {youtubeSourceUrl&&trailerUrl?<p className="metadata-credit">Found on YouTube · <a href={youtubeSourceUrl} target="_blank" rel="noopener noreferrer">Open trailer</a>{youtube?.channelTitle?' · '+youtube.channelTitle:''}</p>:data?.sourceUrl&&trailerUrl&&<p className="metadata-credit">Trailer link listed on <a href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Wikipedia</a>.</p>}
+   <button className="text-button trailer-retry" onClick={()=>setRetry(r=>r+1)}><RefreshCw size={14}/>Refresh trailer</button>
+  </>}
  </section>;
 }

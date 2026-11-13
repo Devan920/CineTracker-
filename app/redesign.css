@@ -145,6 +145,7 @@ tbody tr:hover { background: var(--surface-soft); }
 .table-footer { font-size: 11px; padding: 16px 2px; color: var(--muted); }
 .honesty-note { color: var(--muted); }
 .honesty-note p { font-size: 11px; }
+.honesty-note a { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 11px; color: var(--green); }
 .honesty-note button { min-height: 44px; font-size: 11px; color: var(--green); }
 .main-footer { color: var(--muted); }
 .main-footer small { font-family: inherit; font-size: 11px; color: var(--muted); }

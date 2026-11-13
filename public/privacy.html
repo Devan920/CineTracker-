@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d11">
+  <title>Privacy policy · CineTracker</title>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#080d11;color:#f4f4f5}
+    body{max-width:760px;margin:0 auto;padding:32px 22px 64px;line-height:1.7}
+    a{color:#5eead4}h1{line-height:1.15}h2{margin:30px 0 8px;font-size:18px}p,li{color:#cbd5d1}li{margin:7px 0}
+    .back,.clear{display:inline-flex;align-items:center;min-height:42px;padding:0 14px;border:1px solid #33413d;border-radius:10px;background:#121a19;color:#f4f4f5;text-decoration:none;font:inherit}
+    .clear{cursor:pointer}.note{padding:14px;border:1px solid #263a35;border-radius:12px;background:#101917}
+    #status{min-height:1.4em;color:#5eead4}
+  </style>
+</head>
+<body>
+  <a class="back" href="/">← Back to CineTracker</a>
+  <h1>Privacy policy</h1>
+  <p>Last updated: November 13, 2026</p>
+  <p>This notice explains how CineTracker handles information in the app, including its optional YouTube trailer search.</p>
+
+  <h2>YouTube trailer search and playback</h2>
+  <p>If you choose <strong>Agree &amp; continue</strong> in a movie’s trailer panel, CineTracker sends that movie’s title and release year to Google’s YouTube Data API to find a matching trailer. You do not need to sign in to Google. Google receives the network and device information needed to provide the request, as described in the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.</p>
+  <p>CineTracker stores a small set of returned trailer identifiers and labels on your device. It refreshes a match when you open the trailer again after 24 hours and removes stored YouTube search data within 30 days. When a trailer plays, the YouTube embedded player connects to YouTube and may process playback and device information under <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube’s Terms of Service</a>.</p>
+
+  <h2>Other app information</h2>
+  <ul>
+    <li>Your watchlist, appearance choice, cached collection reports, movie details and app preferences are kept in local device storage. CineTracker does not operate an account or analytics server for this data.</li>
+    <li>Collection reports, movie catalogue information, map links, app updates and town searches are requested from their displayed or linked providers. Those providers receive the ordinary network request information needed to respond.</li>
+    <li>Nearby cinema lookup uses approximate location only after you choose “Use my location.” Coordinates are rounded and compared on your device with the bundled cinema list; they are not sent to CineTracker. A town search sends the entered place name to Open-Meteo’s geocoding service.</li>
+  </ul>
+
+  <h2>Clear YouTube trailer data</h2>
+  <p>You can remove the saved YouTube search results and withdraw trailer-search consent on this device. The next trailer search will ask again.</p>
+  <button class="clear" id="clear-data" type="button">Clear trailer data and consent</button>
+  <p id="status" role="status" aria-live="polite"></p>
+
+  <h2>Contact</h2>
+  <p>For privacy questions, contact the project maintainer through the <a href="https://github.com/Devan920/CineTracker-/issues" target="_blank" rel="noopener noreferrer">CineTracker project page</a>.</p>
+  <script>
+    document.getElementById('clear-data').addEventListener('click',function(){
+      const status=document.getElementById('status');
+      try{localStorage.removeItem('cinetracker-youtube-trailers-v1');localStorage.removeItem('cinetracker-youtube-consent-v1');status.textContent='YouTube trailer data and consent were cleared from this device.';}
+      catch{status.textContent='This browser could not access local storage. Clear CineTracker data in your device settings.';}
+    });
+  </script>
+</body>
+</html>

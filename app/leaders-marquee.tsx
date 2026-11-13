@@ -13,7 +13,7 @@ export default memo(function LeadersMarquee({movies,loading,status}:{movies:Movi
   <span className="leader-diamond" aria-hidden="true">✦</span>
  </span>);
  return <section className="leaders-marquee" aria-label="Leading South and North Indian films">
-  <div className="leaders-caption"><span><Trophy size={14}/>{status==='error'||status==='partial'?'LAST AVAILABLE LEADERS':status==='initial'?'COLLECTION SNAPSHOT':'BOX OFFICE LEADERS'}</span></div>
+  <div className="leaders-caption"><span><Trophy size={14}/>{status==='error'?'LAST AVAILABLE LEADERS':status==='partial'?'SELECTED FEED LEADERS':status==='initial'?'COLLECTION SNAPSHOT':'BOX OFFICE LEADERS'}</span></div>
   <div className="marquee-window" tabIndex={0} aria-label="Film leaders; focus to read at your own pace"><div className="marquee-track"><div className="marquee-group">{groupContent}</div><div className="marquee-group marquee-copy" aria-hidden="true">{groupContent}</div></div></div>
   <p className="leaders-context">Highest reported worldwide gross among tracked films, grouped by film industry. Regional theatre totals unavailable.</p>
  </section>;

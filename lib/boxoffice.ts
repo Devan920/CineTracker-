@@ -1,6 +1,8 @@
 export const REFRESH_MS = 20 * 60 * 1000;
 export const SOURCE = 'https://www.sacnilk.com';
 export const CATALOG_URL = SOURCE + '/entertainmenttopbar/Box_Office_Collection?hl=en';
+export const INDIAN_BOX_OFFICE_ORIGIN='https://indian-boxoffice.com';
+export const INDIAN_BOX_OFFICE_RSS_URL=INDIAN_BOX_OFFICE_ORIGIN+'/feed.xml';
 export type Daily = { day: number; date: string | null; net: number | null };
 export type Movie = {
   year?:number; archive?:boolean; wikiPageId?:number;
@@ -23,6 +25,50 @@ export function amount(s: string | undefined | null): number | null {
   if (!m) return null;
   const n=Number(m[1].replace(/,/g,'')) * (/^L/i.test(m[2]) ? 0.01 : 1);
   return Number.isFinite(n) && n >= 0 && n < 1000000 ? Math.round(n*10000)/10000 : null;
+}
+function decodeXml(value:string):string{
+ return value.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/&#x([\da-f]+);/gi,(_,hex)=>{const cp=parseInt(hex,16);return cp>0&&cp<=0x10ffff?String.fromCodePoint(cp):'';}).replace(/&#(\d+);/g,(_,digits)=>{const cp=Number(digits);return cp>0&&cp<=0x10ffff?String.fromCodePoint(cp):'';}).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&apos;|&#39;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');
+}
+function xmlTag(xml:string,name:string):string{
+ const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),value=xml.match(new RegExp('<'+escaped+'\\b[^>]*>([\\s\\S]*?)<\\/'+escaped+'\\s*>','i'))?.[1]??'';
+ return textOf(decodeXml(value).replace(/<[^>]+>/g,' '));
+}
+function rssFilmTitle(headline:string,description:string):string{
+ const candidates=[headline,description];
+ for(const candidate of candidates){
+  let title=candidate.trim().replace(/^India box office:\s*/i,'').replace(/\s+leads the latest(?: reported)? daily chart.*$/i,'').replace(/\s+leads the latest reported daily India nett.*$/i,'').replace(/\s+box office\s*[—–:-].*$/i,'').replace(/\s+box office\s*$/i,'').replace(/\s+\([^)]*\)\s*[—–:-]\s*verdict.*$/i,'').trim();
+  if(title&&normalizeFeedTitle(title)!==normalizeFeedTitle(candidate))return title;
+ }
+ return '';
+}
+function normalizeFeedTitle(value:string):string{return value.normalize('NFKD').replace(/\([^)]*\)/g,'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');}
+function feedAmount(text:string,kind:'india'|'worldwide'):{value:number|null;raw:string|null}{
+ const patterns=kind==='india'?[/India\s+nett?\s*(?:collection|total)?\s*(?:to|is|:)?\s*(₹?\s*[\d,]+(?:\.\d+)?\s*Cr)/i,/₹\s*([\d,]+(?:\.\d+)?)\s*Cr\s*(?:India\s+)?nett?\b/i]:[/worldwide(?:\s+gross)?\s*(?:to|is|:)?\s*(₹?\s*[\d,]+(?:\.\d+)?\s*Cr)/i,/₹\s*([\d,]+(?:\.\d+)?)\s*Cr\s*WW\b/i];
+ for(const pattern of patterns){const match=text.match(pattern);if(match){const raw=match[1].includes('Cr')?match[1]:'₹'+match[1]+' Cr';return {value:amount(raw),raw};}}
+ return {value:null,raw:null};
+}
+/** Reads only the publisher's explicitly exposed RSS feed; values remain estimates and titles absent from the feed stay absent. */
+export function parseIndianBoxOfficeRss(xml:string,checkedAt:string):Movie[]{
+ if(xml.length>1000000||!/<rss\b/i.test(xml)||!/<channel\b/i.test(xml))throw new Error('The Indian Box Office feed could not be read.');
+ const items=[...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item\s*>/gi)],movies=new Map<string,Movie>();
+ for(const item of items){
+  const body=item[1],headline=xmlTag(body,'title'),description=xmlTag(body,'description'),name=rssFilmTitle(headline,description);
+  if(!name)continue;
+  const sourceText=xmlTag(body,'link')||xmlTag(body,'guid');if(!sourceText)continue;let sourceUrl:string;
+  try{const url=new URL(sourceText,INDIAN_BOX_OFFICE_ORIGIN);if(url.protocol!=='https:'||url.origin!==INDIAN_BOX_OFFICE_ORIGIN)continue;sourceUrl=url.href;}catch{continue;}
+  const combined=description+' '+headline,india=feedAmount(combined,'india'),world=feedAmount(combined,'worldwide');
+  if(india.value===null||world.value===null)continue;
+  const pubDate=xmlTag(body,'pubDate'),published=pubDate&&Number.isFinite(Date.parse(pubDate))?new Date(pubDate).toISOString():null;
+  const daily=combined.match(/latest reported daily India nett at\s*₹?\s*([\d,]+(?:\.\d+)?)\s*Cr\s+on\s+Day\s+(\d+)/i),day=daily?Number(daily[2]):null;
+  const reportDate=published&&day?istDate(published):null,title=name.replace(/\s*\([^)]*\)\s*$/,'').trim(),id='ibo:'+normalizeFeedTitle(title);
+  const languageMatch=name.match(/\((Hindi|Tamil|Telugu|Malayalam|Kannada|Punjabi|English|Bengali|Marathi|Gujarati|Odia|Assamese)\)\s*$/i)??description.match(/\((Hindi|Tamil|Telugu|Malayalam|Kannada|Punjabi|English|Bengali|Marathi|Gujarati|Odia|Assamese)\)\s*[—–,]/i);
+  const language=languageMatch?.[1];
+  const movie:Movie={id,title,languages:language?[language]:[],poster:null,day,reportDate,releaseDate:null,indiaNet:india.value,indiaGross:null,worldwide:world.value,overseas:null,
+   daily:daily&&day? [{day,net:amount('₹'+daily[1]+' Cr'),date:reportDate}]:[],sourceUrl,sourceUpdatedAt:published,checkedAt,lastSeenAt:checkedAt,status:'estimate',coverage:'active-report',warnings:['Consensus estimate; not audited.','Listed in the publisher’s RSS feed.']};
+  const previous=movies.get(id),currentTime=published?Date.parse(published):0,previousTime=previous?.sourceUpdatedAt?Date.parse(previous.sourceUpdatedAt):0;
+  if(!previous||currentTime>previousTime||currentTime===previousTime&&movie.daily.length>previous.daily.length)movies.set(id,movie);
+ }
+ return [...movies.values()].sort((a,b)=>(b.worldwide??-1)-(a.worldwide??-1));
 }
 export function safeSource(path: string): string | null {
   try { const u=new URL(path.replace(/&amp;/g,'&'),SOURCE); return u.origin===SOURCE && (/^\/(quicknews|movie)\/[A-Za-z0-9_():.,!&%+\-]+$/.test(u.pathname)) ? u.href : null; } catch { return null; }

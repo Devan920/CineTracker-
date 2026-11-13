@@ -1,6 +1,6 @@
 export type ThemeMode = 'light' | 'dark';
 export const THEME_KEY = 'cinepulse-appearance-v2';
-export const THEME_COLORS = { light: '#f8f9f6', dark: '#09090b' };
+export const THEME_COLORS = { light: '#f8f9f6', dark: '#080d11' };
 export function validTheme(value: unknown): ThemeMode {
   return value === 'light' ? 'light' : 'dark';
 }

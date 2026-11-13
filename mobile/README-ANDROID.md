@@ -5,7 +5,9 @@ This app bundles the existing CineTracker screens in a Capacitor Android app. It
 
 ## Data behavior
 
-The Android app reads the same public report pages through Android's HTTPS networking API and the existing validated parsers. It stores the last successful report on the device, checks every 20 minutes while open, and resumes when reopened. New releases are discovered from public listings. No ChatGPT sign-in, private-site access token, database credential, or old sample collection figures are embedded in the APK. Robots restrictions are honored; a blocked or failed request leaves existing values and timestamps intact. New installations show an empty/error state until reports can actually be loaded.
+The Android app reads the Indian Box Office publisher's public RSS feed through Android's HTTPS networking API. It stores the last successful feed snapshot on the device, checks every 20 minutes while open, and resumes when reopened. Only feed-listed movies with both India net and worldwide totals appear in the current collection report; figures remain consensus estimates, not audited receipts. India gross is not supplied by this feed and stays blank. Each result links back to its feed report. No old Sacnilk collection snapshot is bundled into the live report or APK.
+
+YouTube trailer lookup uses the optional YouTube Data API `search.list` endpoint. The Android build reads `YOUTUBE_API_KEY` from GitHub Actions secrets; local builds can set `VITE_YOUTUBE_API_KEY` in the ignored `mobile/.env.local` file. The key is compiled into the APK, so treat it as a public client key: restrict it to YouTube Data API v3 and configure Android restrictions for package `com.devanarayanan.cinetracker` and the APK's signing certificate when a stable signing certificate is in use. Pass that certificate's SHA-1 as `YOUTUBE_ANDROID_CERT_SHA1` for the request header. First use asks the viewer to agree to the trailer privacy notice and YouTube terms. Search metadata is refreshed after 24 hours of reuse and removed from device storage within 30 days. If YouTube search is unavailable, CineTracker falls back to an available Wikipedia-linked trailer. Never commit or send API keys in chat.
 
 Figures remain published estimates. Neither a successful build nor a 20-minute refresh guarantees that a publisher has supplied newer figures, complete theatre coverage, or audited revenue. The regional marquee ranks film industries by worldwide gross; it does not claim region-specific ticket revenue.
 
@@ -92,9 +94,10 @@ alongside the original watchlist IDs.
 
 ## Classic layout and nearby cinemas (1.3.0)
 
-The classic layout and green colour scheme are restored. Search, archive,
-metadata, watchlists and feedback remain available, with heavier headings and
-movie names. The movie dialog separates Cast & story and Nearby cinemas.
+The current layout opens in dark mode with teal highlights; the earlier violet
+accent is removed. Search, archive, metadata, watchlists and feedback remain
+available, with heavier headings and movie names. The movie dialog separates
+Cast & story and Nearby cinemas.
 
 The official Capacitor Geolocation plugin requests only ACCESS_COARSE_LOCATION
 on an explicit Use my location tap. Approximate coordinates are rounded to two
