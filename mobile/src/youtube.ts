@@ -76,12 +76,12 @@ export class YouTubeTrailerSearch{
  }
  pruneExpired():void{this.save(this.cache());}
 
- async find(title:string,year:number|null):Promise<TrailerMatch&{configured:boolean;cached?:boolean}>{
+ async find(title:string,year:number|null,force=false):Promise<TrailerMatch&{configured:boolean;cached?:boolean}>{
   if(!this.key)return {configured:false,trailerUrl:null,sourceUrl:null};
   try{if(this.storage.getItem(YOUTUBE_CONSENT_KEY)!=='accepted')return {configured:true,trailerUrl:null,sourceUrl:null};}catch{return {configured:true,trailerUrl:null,sourceUrl:null};}
   const normalized=normalizeTitle(title),cacheKey=normalized+':'+(year??'');
   const cache=this.cache(),saved=cache[cacheKey],ttl=saved?.result.trailerUrl?POSITIVE_TTL:NEGATIVE_TTL;
-  if(saved&&this.now()-saved.checkedAt<ttl)return {...saved.result,configured:true,cached:true};
+  if(!force&&saved&&this.now()-saved.checkedAt<ttl)return {...saved.result,configured:true,cached:true};
 
   const url=new URL('https://www.googleapis.com/youtube/v3/search');
   url.searchParams.set('part','snippet');url.searchParams.set('type','video');

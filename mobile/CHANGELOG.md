@@ -1,3 +1,9 @@
+# CineTracker 1.6.2
+
+- Put India net, India gross, worldwide and overseas totals first in movie details.
+- Show film poster artwork in collection lists, using Wikipedia image results and a local cache when the feed has no artwork.
+- Keep trailers in the movie details screen with YouTube’s built-in play controls for reliable Android playback.
+
 # CineTracker 1.6.1
 
 - Reworked the app with a clearer near-black and teal interface and removed the Library tab and stale collection warning.

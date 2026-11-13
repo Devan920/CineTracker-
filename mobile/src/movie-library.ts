@@ -6,11 +6,12 @@ export const ARCHIVE_URL=SOURCE+'/box-office-records';
 export const ARCHIVE_PAGES=[ARCHIVE_URL,...['mollywood','kollywood','tollywood','sandalwood','bollywood'].map(region=>ARCHIVE_URL+'/'+region)];
 type Reader=(url:string)=>Promise<string>;
 type StorageLike=Pick<Storage,'getItem'|'setItem'>;
-const DAY=86400000, ARCHIVE_KEY='cinetracker-archive-v1', DETAILS_KEY='cinetracker-details-v2';
+const DAY=86400000, ARCHIVE_KEY='cinetracker-archive-v1', DETAILS_KEY='cinetracker-details-v2', POSTERS_KEY='cinetracker-posters-v1';
 const langs:Record<string,string>={Bollywood:'Hindi',Tollywood:'Telugu',Kollywood:'Tamil',Mollywood:'Malayalam',Sandalwood:'Kannada',Hollywood:'English',Pollywood:'Punjabi'};
 export const normalizeTitle=(s:string)=>s.normalize('NFKD').replace(/\([^)]*film[^)]*\)/gi,'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
 const plain=(html:string)=>textOf(html.replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi,'').replace(/<span[^>]*class="[^"]*mw-editsection[^"]*"[^>]*>[\s\S]*?<\/span>/gi,''));
 const safePoster=(s:string|undefined)=>{try{const u=new URL(s??'');return u.origin==='https://cdn.sacnilk.com'?u.href:null;}catch{return null;}};
+const safeWikiPoster=(s:unknown):string|null=>{try{if(typeof s!=='string')return null;const u=new URL(s);return u.protocol==='https:'&&u.hostname==='upload.wikimedia.org'&&u.pathname.startsWith('/wikipedia/')?u.href:null;}catch{return null;}};
 
 function youtubeEmbed(href:string):string|null{
  try{
@@ -67,7 +68,7 @@ export function parseSearch(payload:any):MovieMatch[]{
   (/\b(?:19|20)\d{2}\b.*\bfilm\b/i.test(p.description??'')||/\((?:(?:19|20)\d{2} )?film\)/i.test(p.title)))
   .sort((a:any,b:any)=>(a.index??99)-(b.index??99)).map((p:any)=>({pageId:p.pageid,
    title:p.title.replace(/\s*\([^)]*film[^)]*\)\s*$/i,''),year:Number(p.title.match(/\((\d{4})[^)]*film/i)?.[1]??p.description?.match(/\b((?:19|20)\d{2})\b/)?.[1])||null,
-   description:String(p.description??'').slice(0,200)}));
+   description:String(p.description??'').slice(0,200),posterUrl:safeWikiPoster(p.thumbnail?.source)}));
 }
 export function chooseMatch(matches:MovieMatch[],title:string,year:number|null):MovieMatch|null{
  const exact=matches.filter(m=>normalizeTitle(m.title)===normalizeTitle(title)&&(!year||m.year===year));
@@ -89,12 +90,13 @@ export function parseFilm(payload:any,checkedAt:string):FilmDetails{
 }
 export class MovieLibrary{
  private read:Reader;private storage:StorageLike;private now:()=>number;
- private archive:ArchiveReport={movies:[],checkedAt:null,stale:false};private details:Record<string,FilmDetails>={};
+ private archive:ArchiveReport={movies:[],checkedAt:null,stale:false};private details:Record<string,FilmDetails>={};private posters:Record<string,{url:string|null;checkedAt:string}>={};
  private pending=new Map<string,Promise<any>>();private robots:string|null=null;private lastSource=0;
  constructor(read:Reader,storage:StorageLike,now=Date.now){
   this.read=read;this.storage=storage;this.now=now;
   try{const a=JSON.parse(storage.getItem(ARCHIVE_KEY)??'null');if(a&&Array.isArray(a.movies)&&typeof a.checkedAt==='string')this.archive=a;}catch{}
   try{const d=JSON.parse(storage.getItem(DETAILS_KEY)??'{}');if(d&&typeof d==='object'&&!Array.isArray(d))this.details=d;}catch{}
+  try{const p=JSON.parse(storage.getItem(POSTERS_KEY)??'{}');if(p&&typeof p==='object'&&!Array.isArray(p))this.posters=Object.fromEntries(Object.entries(p).filter(([,v])=>v&&typeof v==='object'&&typeof (v as any).checkedAt==='string').map(([k,v])=>{const item=v as {url?:unknown;checkedAt:string};return [k,{url:safeWikiPoster(item.url),checkedAt:item.checkedAt}];}));}catch{}
  }
  private save(key:string,value:unknown){try{this.storage.setItem(key,JSON.stringify(value));}catch{}}
  private once<T>(key:string,fn:()=>Promise<T>):Promise<T>{
@@ -129,8 +131,22 @@ export class MovieLibrary{
  async search(query:string):Promise<MovieMatch[]>{
   const q=query.trim().slice(0,80);if(q.length<2)return [];
   return this.once('search:'+q,async()=>{
-   const params=new URLSearchParams({action:'query',generator:'search',gsrsearch:q+' film',gsrlimit:'12',prop:'description|pageprops',format:'json',formatversion:'2',origin:'*'});
+   const params=new URLSearchParams({action:'query',generator:'search',gsrsearch:q+' film',gsrlimit:'12',prop:'description|pageprops|pageimages',piprop:'thumbnail',pithumbsize:'640',format:'json',formatversion:'2',origin:'*'});
    return parseSearch(JSON.parse(await this.read(WIKI_API+'?'+params)));
+  });
+ }
+ async getPoster(title:string,year:number|null,pageId?:number):Promise<string|null>{
+  const key=pageId?'page:'+pageId:normalizeTitle(title)+':'+(year??''),cached=this.posters[key],age=cached?this.now()-Date.parse(cached.checkedAt):Infinity,ttl=cached?.url?30*DAY:DAY;
+  if(cached&&age>=0&&age<ttl)return cached.url;
+  return this.once('poster:'+key,async()=>{
+   let url:string|null=null;
+   try{
+    if(pageId){const params=new URLSearchParams({action:'query',pageids:String(pageId),prop:'pageimages',piprop:'thumbnail',pithumbsize:'640',format:'json',formatversion:'2',origin:'*'});const payload=JSON.parse(await this.read(WIKI_API+'?'+params));url=safeWikiPoster(payload?.query?.pages?.[0]?.thumbnail?.source);}
+    else{const matches=await this.search(title+(year?' '+year:'')),exact=chooseMatch(matches,title,year);const latestSameTitle=!year?matches.filter(m=>normalizeTitle(m.title)===normalizeTitle(title)).sort((a,b)=>(b.year??0)-(a.year??0))[0]:null;url=(exact??latestSameTitle)?.posterUrl??null;}
+   }catch{}
+   this.posters[key]={url,checkedAt:new Date(this.now()).toISOString()};
+   const entries=Object.entries(this.posters).sort((a,b)=>Date.parse(b[1].checkedAt)-Date.parse(a[1].checkedAt)).slice(0,300);this.posters=Object.fromEntries(entries);this.save(POSTERS_KEY,this.posters);
+   return url;
   });
  }
  async getDetails(title:string,year:number|null,pageId?:number,force=false):Promise<FilmDetails>{

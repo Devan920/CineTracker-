@@ -1,6 +1,6 @@
 import type {Movie} from './boxoffice';
 
-export type MovieMatch = {pageId:number; title:string; year:number|null; description:string};
+export type MovieMatch = {pageId:number; title:string; year:number|null; description:string; posterUrl?:string|null};
 export type FilmDetails = {
   title:string; year:number|null; cast:string[]; director:string|null; story:string|null; trailerUrl:string|null;
   sourceUrl:string|null; checkedAt:string; stale?:boolean; choices?:MovieMatch[]; message?:string;

@@ -98,11 +98,17 @@ if (Capacitor.isNativePlatform()) {
         if(address.pathname==='/api/locations/search')data={towns:await towns.search(address.searchParams.get('q')??'')};
         else if(address.pathname==='/api/archive')data=await library.getArchive(address.searchParams.get('refresh')==='1');
         else if(address.pathname==='/api/movies/search')data={movies:await library.search(address.searchParams.get('q')??'')};
+        else if(address.pathname==='/api/movies/poster'){
+          const title=(address.searchParams.get('title')??'').slice(0,180);
+          const year=Number(address.searchParams.get('year'))||null,id=Number(address.searchParams.get('pageid'))||undefined;
+          if(!title||year&&(year<1880||year>2100)||id&&(!Number.isInteger(id)||id<1))return Response.json({error:'Invalid poster request.'},{status:400});
+          data={posterUrl:await library.getPoster(title,year,id)};
+        }
         else if(address.pathname==='/api/movies/trailer-search'){
           const title=(address.searchParams.get('title')??'').slice(0,180);
           const year=Number(address.searchParams.get('year'))||null;
           if(!title||year&&(year<1880||year>2100))return Response.json({error:'Invalid trailer search.'},{status:400});
-          data=await youtubeTrailers.find(title,year);
+          data=await youtubeTrailers.find(title,year,address.searchParams.get('refresh')==='1');
         }
         else if(address.pathname==='/api/movies/details'){
           const title=(address.searchParams.get('title')??'').slice(0,180);

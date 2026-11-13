@@ -18,7 +18,7 @@ const ResultCard = memo(function ResultCard({movie,onSelect}:{movie:Movie;onSele
  </button>;
 });
 
-function fromMatch(m:MovieMatch):Movie{return {id:'wiki:'+m.pageId,title:m.title,year:m.year??undefined,wikiPageId:m.pageId,languages:[],poster:null,
+function fromMatch(m:MovieMatch):Movie{return {id:'wiki:'+m.pageId,title:m.title,year:m.year??undefined,wikiPageId:m.pageId,languages:[],poster:m.posterUrl??null,
  day:null,reportDate:null,releaseDate:null,indiaNet:null,indiaGross:null,worldwide:null,overseas:null,daily:[],sourceUrl:'https://en.wikipedia.org/?curid='+m.pageId,
  sourceUpdatedAt:null,checkedAt:new Date().toISOString(),lastSeenAt:new Date().toISOString(),status:'unavailable',coverage:'recent-release',warnings:[]};}
 
@@ -94,7 +94,7 @@ export function MovieTrailer({movie}:{movie:Movie}){
  useEffect(()=>{let accepted=false;try{accepted=localStorage.getItem(YOUTUBE_CONSENT_KEY)==='accepted';}catch{}setConsent(accepted?'accepted':'required');},[]);
  useEffect(()=>{let active=true;const abort=new AbortController();setLoading(true);setError('');setData(null);setYoutube(null);
   if(consent!=='accepted'){setLoading(false);return()=>{active=false;abort.abort();};}
-  const title=movie.title,year=yearOf(movie),searchParams=new URLSearchParams({title});if(year)searchParams.set('year',String(year));
+  const title=movie.title,year=yearOf(movie),searchParams=new URLSearchParams({title});if(year)searchParams.set('year',String(year));if(retry)searchParams.set('refresh','1');
   (async()=>{
    try{
     const response=await apiFetch('/api/movies/trailer-search?'+searchParams,{signal:abort.signal});
@@ -114,15 +114,15 @@ export function MovieTrailer({movie}:{movie:Movie}){
  let youtubeSourceUrl:string|null=null;
  try{const source=new URL(youtube?.sourceUrl??'');if(source.origin==='https://www.youtube.com'&&source.pathname==='/watch'&&/^[\w-]{11}$/.test(source.searchParams.get('v')??''))youtubeSourceUrl=source.href;}catch{}
  let playbackUrl:string|null=null;
- if(trailerUrl){const player=new URL(trailerUrl);player.searchParams.set('autoplay','1');player.searchParams.set('mute','1');player.searchParams.set('playsinline','1');player.searchParams.set('rel','0');playbackUrl=player.href;}
+ if(trailerUrl){const player=new URL(trailerUrl);player.searchParams.set('autoplay','0');player.searchParams.set('controls','1');player.searchParams.set('playsinline','1');player.searchParams.set('rel','0');player.searchParams.set('origin',window.location.origin);playbackUrl=player.href;}
  return <section className="movie-trailer" aria-label={'Trailer for '+movie.title}>
-  <div className="trailer-heading"><span><Play size={18} fill="currentColor"/></span><div><h3>{movie.title} trailer</h3><p>Starts automatically when a trailer is available. Playback is muted.</p></div></div>
+  <div className="trailer-heading"><span><Play size={18} fill="currentColor"/></span><div><h3>{movie.title} trailer</h3><p>Play the trailer here using the controls inside the video.</p></div></div>
   {consent==='checking'||consent==='required'?<div className="trailer-consent"><p>To find and play this trailer, CineTracker sends the movie title and year to YouTube. Search results are stored on this device for up to 30 days and refreshed when you return after 24 hours. Review the <a href="/privacy.html">privacy policy</a> and <a href="/terms.html">terms of use</a>.</p><div><button className="button primary" disabled={consent==='checking'} onClick={allowYoutube}>Agree & continue</button><button className="button" disabled={consent==='checking'} onClick={()=>setConsent('declined')}>Not now</button></div></div>:consent==='declined'?<div className="trailer-empty"><p>YouTube search is off. Enable it to find an automatic trailer.</p><button className="button primary" onClick={()=>setConsent('required')}>Review and enable YouTube</button></div>:<>
    {loading&&<p className="library-loading" role="status">Searching YouTube for a trailer…</p>}
    {error&&<p className="library-caption" role="status">Trailer details aren’t available right now.</p>}
    {!!data?.choices?.length&&<div className="movie-matches" aria-label="Choose a matching film">{data.choices.map(m=><button className="button" key={m.pageId} onClick={()=>setPageId(m.pageId)}>{m.title} {m.year?'('+m.year+')':''}<ArrowUpRight size={14}/></button>)}</div>}
-   {playbackUrl?<div className="trailer-player"><iframe src={playbackUrl} title={movie.title+' trailer'} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/></div>:
-    <div className="trailer-empty"><p>{error?'You can still search for a trailer on YouTube.':'No trailer link is listed for this movie yet.'}</p><a className="button primary" href={searchUrl} target="_blank" rel="noopener noreferrer"><Play size={16}/>Search YouTube for trailer<ArrowUpRight size={15}/></a></div>}
+   {playbackUrl?<div className="trailer-player"><iframe src={playbackUrl} title={movie.title+' trailer'} loading="eager" referrerPolicy="origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/></div>:
+    <div className="trailer-empty"><p>{error?'Trailer details are unavailable right now.':youtube?.configured===false?'Automatic trailer search is unavailable right now.':'No trailer link is listed for this movie yet.'}</p><a className="button primary" href={searchUrl} target="_blank" rel="noopener noreferrer"><Play size={16}/>Search YouTube for trailer<ArrowUpRight size={15}/></a></div>}
    {youtubeSourceUrl&&trailerUrl?<p className="metadata-credit">Found on YouTube · <a href={youtubeSourceUrl} target="_blank" rel="noopener noreferrer">Open trailer</a>{youtube?.channelTitle?' · '+youtube.channelTitle:''}</p>:data?.sourceUrl&&trailerUrl&&<p className="metadata-credit">Trailer link listed on <a href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Wikipedia</a>.</p>}
    <button className="text-button trailer-retry" onClick={()=>setRetry(r=>r+1)}><RefreshCw size={14}/>Refresh trailer</button>
   </>}
