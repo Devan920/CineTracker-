@@ -1,3 +1,10 @@
+# CineTracker 1.6.1
+
+- Reworked the app with a clearer near-black and teal interface and removed the Library tab and stale collection warning.
+- Open movie details on the trailer and automatically find a matching YouTube trailer when a playable link is available.
+- Show India net and worldwide collection figures from the current Indian Box Office feed.
+- Keep the automatic Android update checker enabled for this new release.
+
 # CineTracker 1.6.0
 
 - Refreshed the Android screens with a near-black, violet-accented cinematic look.
